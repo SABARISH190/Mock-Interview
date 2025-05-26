@@ -1,3 +1,9 @@
+databases:
+  - name: mock-interview-db
+    databaseName: mock_interview
+    user: mock_interview_user
+    plan: free
+
 services:
   - type: web
     name: mock-interview
