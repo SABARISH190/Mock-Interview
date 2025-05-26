@@ -1,0 +1,575 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    /* Admin-specific styles */
+    .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .stat-card {
+        transition: transform 0.2s;
+        border-left: 4px solid #4e73df;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .stat-card .card-body {
+        padding: 1.5rem;
+    }
+    .stat-card .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #5a5c69;
+    }
+    .stat-card .stat-label {
+        font-size: 0.9rem;
+        color: #858796;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .stat-card .stat-icon {
+        font-size: 2rem;
+        color: #dddfeb;
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+    }
+    .domain-progress {
+        height: 0.5rem;
+        border-radius: 0.25rem;
+        background-color: #eaecf4;
+    }
+    .recent-activity .list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 1.25rem 1.5rem;
+    }
+    .recent-activity .list-group-item:first-child {
+        border-top: none;
+    }
+    .activity-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+    .domain-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h1 class="admin-title">
+                <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Admin</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center">
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                <i class="fas fa-sign-out-alt me-1"></i> Logout
+            </a>
+        </div>
+    </div>
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Users Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-left-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2">Total Users</h6>
+                            <h2 class="mb-0">{{ user_count }}</h2>
+                            <div class="mt-2">
+                                <span class="text-success">
+                                    <i class="bi bi-arrow-up"></i> {{ active_today }} active today
+                                </span>
+                            </div>
+                        </div>
+                        <div class="icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 py-2">
+                    <a href="{{ url_for('admin.users') }}" class="text-decoration-none small">
+                        View all users <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interviews Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-left-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2">Total Interviews</h6>
+                            <h2 class="mb-0">{{ interview_count }}</h2>
+                            {% if weekly_data|length > 1 %}
+                            <div class="mt-2">
+                                {% set last_week = weekly_data[-1].count if weekly_data else 0 %}
+                                {% set prev_week = weekly_data[-2].count if weekly_data|length > 1 else 0 %}
+                                {% set change = ((last_week - prev_week) / prev_week * 100) if prev_week > 0 else 100 %}
+                                <span class="{{ 'text-success' if change >= 0 else 'text-danger' }}">
+                                    <i class="bi bi-arrow-{{ 'up' if change >= 0 else 'down' }}"></i> 
+                                    {{ "%+.1f"|format(change) }}% from last week
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="icon bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-chat-square-text"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 py-2">
+                    <a href="{{ url_for('admin.interviews') }}" class="text-decoration-none small">
+                        View all interviews <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Questions Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-left-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2">Questions</h6>
+                            <h2 class="mb-0">{{ question_count }}</h2>
+                            <div class="mt-2">
+                                <span class="text-muted">
+                                    {{ domain_stats|length }} domains
+                                </span>
+                            </div>
+                        </div>
+                        <div class="icon bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-question-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 py-2">
+                    <a href="{{ url_for('admin.admin_questions.question_list') }}" class="text-decoration-none small">
+                        Manage questions <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Domains Card -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-left-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-muted mb-2">Domain Coverage</h6>
+                            <h2 class="mb-0">{{ domain_coverage }}%</h2>
+                            <div class="mt-2">
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                         style="width: {{ domain_coverage }}%" 
+                                         aria-valuenow="{{ domain_coverage }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="icon bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-tags"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 py-2">
+                    <a href="{{ url_for('admin.admin_questions.question_list') }}" class="text-decoration-none small">
+                        View domains <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Stats Row -->
+    <div class="row g-4 mb-4">
+        <!-- Questions by Domain -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Questions by Domain</h5>
+                    <a href="{{ url_for('admin.admin_questions.question_list') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if domain_table %}
+                    <div class="mb-4">
+                        {% for domain in domain_table|slice(5) %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-medium">{{ domain.domain }}</span>
+                                <span class="text-muted">{{ domain.count }} ({{ domain.percentage }}%)</span>
+                            </div>
+                            <div class="progress domain-progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ domain.percentage }}%; background-color: {{ 'var(--bs-primary)' if loop.index == 1 else 'var(--bs-success)' if loop.index == 2 else 'var(--bs-info)' if loop.index == 3 else 'var(--bs-warning)' if loop.index == 4 else 'var(--bs-danger)' }};"
+                                     aria-valuenow="{{ domain.percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if domain_table|length > 5 %}
+                        <div class="text-center mt-2">
+                            <a href="{{ url_for('admin.admin_questions.question_list') }}" class="text-decoration-none small">
+                                + {{ domain_table|length - 5 }} more domains
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <div class="text-muted mb-3">
+                            <i class="bi bi-question-circle fs-1"></i>
+                        </div>
+                        <p class="mb-0">No domain data available</p>
+                        <a href="{{ url_for('admin.admin_questions.add_question') }}" class="btn btn-sm btn-primary mt-2">
+                            <i class="bi bi-plus-circle"></i> Add Questions
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Questions by Type & Difficulty -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Question Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Question Types -->
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-uppercase text-muted mb-3">By Type</h6>
+                            {% if type_stats %}
+                                {% for q_type, count in type_stats.items() %}
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-{{ 'primary' if q_type == 'technical' else 'success' if q_type == 'behavioral' else 'info' }} me-2">
+                                        {{ q_type|title }}
+                                    </span>
+                                    <div class="ms-auto">
+                                        <span class="fw-medium">{{ count }}</span>
+                                        <span class="text-muted ms-1">({{ "%.1f"|format((count / question_count) * 100) if question_count > 0 else 0 }}%)</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-muted">No question type data</div>
+                            {% endif %}
+                            
+                            <div class="mt-4">
+                                <a href="{{ url_for('admin.admin_questions.add_question') }}" class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="bi bi-plus-circle"></i> Add New Question
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Difficulty Levels -->
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-uppercase text-muted mb-3">By Difficulty</h6>
+                            {% if difficulty_stats %}
+                                {% for difficulty, count in difficulty_stats.items() %}
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-{{ 'success' if difficulty == 'easy' else 'warning' if difficulty == 'medium' else 'danger' }} me-2">
+                                        {{ difficulty|title }}
+                                    </span>
+                                    <div class="ms-auto">
+                                        <span class="fw-medium">{{ count }}</span>
+                                        <span class="text-muted ms-1">({{ "%.1f"|format((count / question_count) * 100) if question_count > 0 else 0 }}%)</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-muted">No difficulty data</div>
+                            {% endif %}
+                            
+                            <div class="mt-4">
+                                <a href="{{ url_for('admin.admin_questions.import_questions') }}" class="btn btn-sm btn-outline-secondary w-100">
+                                    <i class="bi bi-upload"></i> Import Questions
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity Row -->
+    <div class="row g-4">
+        <!-- Recent Users -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Users</h5>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush recent-activity">
+                        {% for user in recent_users %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="activity-avatar me-3" 
+                                         style="background-color: {{ ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796', '#5a5c69', '#e83e8c', '#20c9a6', '#fd7e14']|random }}">
+                                        {{ user.username[0]|upper }}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ user.username }}</h6>
+                                        <small class="text-muted">{{ user.email }}</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="small text-muted">Joined</div>
+                                    <div class="small">{{ user.created_at.strftime('%b %d, %Y') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <div class="text-muted mb-2">
+                                <i class="bi bi-people fs-1"></i>
+                            </div>
+                            <p class="mb-0">No users found</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Interviews -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Interviews</h5>
+                    <a href="{{ url_for('admin.interviews') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush recent-activity">
+                        {% if recent_interviews %}
+                            {% for interview, username in recent_interviews %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <div class="activity-avatar me-3 bg-primary">
+                                            {{ username[0]|upper }}
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ interview.title or 'Untitled Interview' }}</h6>
+                                            <small class="text-muted">
+                                                {{ interview.domain }} • 
+                                                {{ interview.interview_type|title if interview.interview_type else 'Standard' }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="small text-muted">
+                                            {{ interview.created_at.strftime('%b %d, %Y') }}
+                                        </div>
+                                        <span class="badge bg-{{ 'success' if interview.status == 'completed' else 'warning' if interview.status == 'in_progress' else 'secondary' }}">
+                                            {{ interview.status|replace('_', ' ')|title }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="text-muted mb-2">
+                                    <i class="bi bi-chat-square-text fs-1"></i>
+                                </div>
+                                <p class="mb-0">No recent interviews</p>
+                                <a href="{{ url_for('interview.new_interview') }}" class="btn btn-sm btn-primary mt-2">
+                                    <i class="bi bi-plus-circle"></i> Start New Interview
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Initialize the dashboard when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipElements.forEach(function(element) {
+            new bootstrap.Tooltip(element);
+        });
+        
+        // Initialize charts if the chart container exists
+        var chartElement = document.getElementById('weeklyActivityChart');
+        if (chartElement) {
+            initializeWeeklyActivityChart();
+        }
+    });
+    
+    // Function to initialize the weekly activity chart
+    function initializeWeeklyActivityChart() {
+        // Get the chart canvas element
+        var ctx = document.getElementById('weeklyActivityChart');
+        if (!ctx) {
+            console.warn('Weekly activity chart element not found');
+            return;
+        }
+        
+        // Get the chart data from the template
+        var chartData = [];
+        try {
+            // Try to parse the weekly data if it's passed from the template
+            {% if weekly_data %}
+                chartData = {{ weekly_data|tojson|safe }};
+            {% endif %}
+        } catch (error) {
+            console.error('Error parsing chart data:', error);
+            return;
+        }
+        
+        // Prepare data for the chart
+        var labels = [];
+        var data = [];
+        
+        // Process the data if available
+        if (Array.isArray(chartData) && chartData.length > 0) {
+            chartData.forEach(function(item) {
+                if (item && item.week !== undefined) {
+                    labels.push('Week ' + item.week);
+                    data.push(parseInt(item.count) || 0);
+                }
+            });
+        } else {
+            // Show a message if no data is available
+            ctx.parentElement.innerHTML = '<div class="text-center py-4 text-muted">No interview data available for the selected period.</div>';
+            return;
+        }
+        
+        // Create the chart
+        try {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Interviews',
+                        data: data,
+                        borderColor: 'rgba(78, 115, 223, 1)',
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+                        pointHoverBorderColor: 'rgba(255, 255, 255, 1)',
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 14 },
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Interviews: ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error creating chart:', error);
+            ctx.parentElement.innerHTML = '<div class="alert alert-danger">Error loading chart. Please try again later.</div>';
+        }
+    }
+</script>
+{% endblock %}

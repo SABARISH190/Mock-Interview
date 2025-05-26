@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if question %}Edit{% else %}Add New{% endif %} Question - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .admin-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #4e73df;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #b7c1e0;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+    .btn-save {
+        background-color: #4e73df;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+    }
+    .btn-save:hover {
+        background-color: #2e59d9;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas {% if question %}fa-edit{% else %}fa-plus-circle{% endif %} me-2"></i>
+            {% if question %}Edit Question{% else %}Add New Question{% endif %}
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Admin</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin_questions.question_list') }}">Questions</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if question %}Edit{% else %}Add{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Question Details</h5>
+                    <a href="{{ url_for('admin_questions.question_list') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Questions
+                    </a>
+                </div>
+                <div class="card-body">
+                <form method="POST" id="questionForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="domain" class="form-label">Domain <span class="text-danger">*</span></label>
+                        <select class="form-select {% if form.domain.errors %}is-invalid{% endif %}" 
+                               id="domain" name="domain" required>
+                            <option value="">Select a domain</option>
+                            {% for domain in domains %}
+                                <option value="{{ domain }}" 
+                                    {% if (question and question.domain == domain) or (form.domain.data == domain) %}selected{% endif %}>
+                                    {{ domain }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.domain.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.domain.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="question_type" class="form-label">Question Type <span class="text-danger">*</span></label>
+                        <select class="form-select {% if form.question_type.errors %}is-invalid{% endif %}" 
+                               id="question_type" name="question_type" required>
+                            <option value="">Select a question type</option>
+                            <option value="technical" 
+                                {% if (question and question.question_type == 'technical') or (form.question_type.data == 'technical') %}selected{% endif %}>
+                                Technical
+                            </option>
+                            <option value="behavioral" 
+                                {% if (question and question.question_type == 'behavioral') or (form.question_type.data == 'behavioral') %}selected{% endif %}>
+                                Behavioral
+                            </option>
+                            <option value="situational" 
+                                {% if (question and question.question_type == 'situational') or (form.question_type.data == 'situational') %}selected{% endif %}>
+                                Situational
+                            </option>
+                        </select>
+                        {% if form.question_type.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.question_type.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="question_text" class="form-label">Question Text <span class="text-danger">*</span></label>
+                        <textarea class="form-control {% if form.question_text.errors %}is-invalid{% endif %}" 
+                                 id="question_text" name="question_text" rows="3" required>{% if question %}{{ question.question_text }}{% else %}{{ form.question_text.data or '' }}{% endif %}</textarea>
+                        {% if form.question_text.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.question_text.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="answer_text" class="form-label">Answer/Sample Response <span class="text-danger">*</span></label>
+                        <textarea class="form-control {% if form.answer_text.errors %}is-invalid{% endif %}" 
+                                 id="answer_text" name="answer_text" rows="6" required>{% if question %}{{ question.answer_text }}{% else %}{{ form.answer_text.data or '' }}{% endif %}</textarea>
+                        <div class="form-text">Provide a sample answer or key points for this question.</div>
+                        {% if form.answer_text.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.answer_text.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="difficulty" class="form-label">Difficulty</label>
+                            <select class="form-select {% if form.difficulty.errors %}is-invalid{% endif %}" 
+                                   id="difficulty" name="difficulty">
+                                <option value="">Select difficulty (optional)</option>
+                                <option value="easy" 
+                                    {% if (question and question.difficulty == 'easy') or (form.difficulty.data == 'easy') %}selected{% endif %}>
+                                    Easy
+                                </option>
+                                <option value="medium" 
+                                    {% if (question and question.difficulty == 'medium') or (form.difficulty.data == 'medium') %}selected{% endif %}>
+                                    Medium
+                                </option>
+                                <option value="hard" 
+                                    {% if (question and question.difficulty == 'hard') or (form.difficulty.data == 'hard') %}selected{% endif %}>
+                                    Hard
+                                </option>
+                            </select>
+                            {% if form.difficulty.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.difficulty.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <input type="text" class="form-control {% if form.category.errors %}is-invalid{% endif %}" 
+                                  id="category" name="category" 
+                                  value="{% if question %}{{ question.category or '' }}{% else %}{{ form.category.data or '' }}{% endif %}" 
+                                  placeholder="e.g., Python, System Design, Leadership">
+                            <div class="form-text">Optional: Categorize this question</div>
+                            {% if form.category.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.category.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('admin.admin_questions.question_list') }}" class="btn btn-outline-secondary me-md-2">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> {% if question %}Update{% else %}Create{% endif %} Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize form validation
+        const form = document.getElementById('questionForm');
+        
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+        
+        // Add new domain option if needed
+        const domainSelect = document.getElementById('domain');
+        const domainInput = document.createElement('input');
+        domainInput.type = 'text';
+        domainInput.className = 'form-control mt-2 d-none';
+        domainInput.placeholder = 'Enter new domain name';
+        domainInput.id = 'newDomain';
+        domainInput.name = 'new_domain';
+        
+        domainSelect.addEventListener('change', function() {
+            if (this.value === '_add_new') {
+                this.parentNode.insertBefore(domainInput, this.nextSibling);
+                domainInput.classList.remove('d-none');
+                domainInput.required = true;
+                this.required = false;
+                domainInput.focus();
+            } else {
+                domainInput.classList.add('d-none');
+                domainInput.required = false;
+                this.required = true;
+            }
+        });
+    });
+</script>
+{% endblock %}

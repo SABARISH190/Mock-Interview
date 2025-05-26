@@ -1,0 +1,16 @@
+Verify Your Email
+
+Hello {{ user.first_name }},
+
+Thank you for registering with Interview Simulator AI. To complete your registration, please enter the following verification code in the application:
+
+Verification Code: {{ user.otp }}
+
+This code will expire in 10 minutes. If you didn't request this, please ignore this email or contact support if you have any questions.
+
+If you're having trouble, you can also verify your email by visiting this link:
+{{ url_for('auth.verify_otp', email=user.email, _external=True) }}
+
+--
+Interview Simulator AI
+This is an automated message, please do not reply to this email.

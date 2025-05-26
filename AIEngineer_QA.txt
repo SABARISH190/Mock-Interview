@@ -1,0 +1,299 @@
+Q1: What is the difference between supervised and unsupervised learning?
+A1: Supervised learning uses labeled data to train models, predicting outputs like classification or regression, e.g., spam detection. Unsupervised learning works with unlabeled data to find patterns, like clustering or dimensionality reduction, e.g., customer segmentation.
+
+Q2: How does a decision tree algorithm work?
+A2: A decision tree splits data into branches based on feature values, using criteria like Gini impurity or information gain to decide splits. It recursively partitions the data until it reaches leaf nodes, which represent predictions, like classifying a fruit as an apple or orange.
+
+Q3: What is overfitting, and how can you prevent it?
+A3: Overfitting occurs when a model learns noise in the training data, performing poorly on new data. I prevent it by using regularization (e.g., L2), cross-validation, pruning (for trees), dropout (in neural networks), and collecting more diverse data.
+
+Q4: Explain the bias-variance tradeoff.
+A4: The bias-variance tradeoff balances model complexity. High bias (underfitting) means the model is too simple, missing patterns. High variance (overfitting) means it’s too complex, capturing noise. I aim for a balance using techniques like regularization and proper validation.
+
+Q5: What is the purpose of a confusion matrix?
+A5: A confusion matrix summarizes classification performance, showing true positives, true negatives, false positives, and false negatives. I use it to calculate metrics like accuracy, precision, recall, and F1-score to evaluate model effectiveness.
+
+Q6: How does gradient descent work in machine learning?
+A6: Gradient descent optimizes a model by iteratively adjusting parameters to minimize a loss function. It calculates the gradient (derivative) of the loss, updates parameters in the opposite direction, and repeats until convergence, using a learning rate to control step size.
+
+Q7: What is the difference between L1 and L2 regularization?
+A7: L1 regularization (Lasso) adds the absolute value of weights to the loss, promoting sparsity by driving some weights to zero. L2 regularization (Ridge) adds the squared value, shrinking weights evenly. I choose L1 for feature selection, L2 for general stability.
+
+Q8: What is a neural network, and what are its main components?
+A8: A neural network is a model inspired by the brain, with layers of interconnected nodes (neurons). Its components include an input layer, hidden layers (with activation functions like ReLU), and an output layer. I use it for tasks like image recognition.
+
+Q9: How does the backpropagation algorithm work?
+A9: Backpropagation calculates gradients of the loss function with respect to weights in a neural network. It propagates errors backward from the output to the input layer, using the chain rule, and updates weights via gradient descent to minimize the loss.
+
+Q10: What is the purpose of an activation function in a neural network?
+A10: An activation function introduces non-linearity, allowing neural networks to learn complex patterns. For example, ReLU (Rectified Linear Unit) outputs the input if positive, otherwise zero, helping with faster convergence and avoiding vanishing gradients.
+
+Q11: What is the vanishing gradient problem, and how do you address it?
+A11: The vanishing gradient problem occurs when gradients become too small during backpropagation, slowing learning in deep networks. I address it using ReLU activation, batch normalization, or architectures like LSTMs, which are designed to retain gradients.
+
+Q12: What is the difference between a CNN and an RNN?
+A12: CNNs (Convolutional Neural Networks) are designed for spatial data like images, using convolutional layers to detect features. RNNs (Recurrent Neural Networks) are for sequential data like text, with loops to maintain memory. I use CNNs for vision, RNNs for NLP.
+
+Q13: How does a transformer architecture work?
+A13: A transformer uses self-attention to weigh the importance of different words in a sequence, enabling parallel processing. It has an encoder-decoder structure, with layers of attention and feed-forward networks, used in models like BERT for NLP tasks.
+
+Q14: What is transfer learning, and when would you use it?
+A14: Transfer learning uses a pre-trained model (e.g., BERT, ResNet) and fine-tunes it for a specific task. I use it when I have limited data, leveraging the pre-trained model’s knowledge to improve performance, like fine-tuning a model for medical image classification.
+
+Q15: What is the difference between precision and recall?
+A15: Precision is the ratio of true positives to all predicted positives, focusing on prediction accuracy. Recall is the ratio of true positives to all actual positives, focusing on capturing all positives. I balance them using F1-score for imbalanced datasets.
+
+Q16: How do you handle imbalanced datasets in machine learning?
+A16: I handle imbalanced datasets by oversampling the minority class (e.g., SMOTE), undersampling the majority class, or using class weights in the loss function. I also use metrics like F1-score or AUC-ROC instead of accuracy to evaluate performance.
+
+Q17: What is the purpose of cross-validation?
+A17: Cross-validation assesses a model’s performance on unseen data by splitting the dataset into k folds, training on k-1 folds, and testing on the remaining fold. I use k-fold cross-validation to ensure the model generalizes well and isn’t overfit.
+
+Q18: What is a loss function, and can you name a few examples?
+A18: A loss function measures the difference between predicted and actual values, guiding model optimization. Examples include Mean Squared Error (MSE) for regression, Cross-Entropy Loss for classification, and Hinge Loss for SVMs.
+
+Q19: What is the difference between batch gradient descent and stochastic gradient descent?
+A19: Batch gradient descent computes the gradient using the entire dataset, which is accurate but slow. Stochastic gradient descent (SGD) uses one sample at a time, which is faster but noisier. I often use mini-batch SGD for a balance of speed and stability.
+
+Q20: How does the k-means clustering algorithm work?
+A20: K-means clustering partitions data into k clusters by randomly initializing k centroids, assigning points to the nearest centroid, and updating centroids based on the mean of assigned points. It repeats until convergence, minimizing within-cluster variance.
+
+Q21: What is the difference between PCA and t-SNE?
+A21: PCA (Principal Component Analysis) is a linear dimensionality reduction technique, maximizing variance to project data into fewer dimensions. t-SNE is non-linear, focusing on preserving local structures for visualization. I use PCA for feature reduction, t-SNE for visualization.
+
+Q22: What is the purpose of batch normalization in a neural network?
+A22: Batch normalization normalizes layer inputs to have zero mean and unit variance, reducing internal covariate shift. It speeds up training, stabilizes gradients, and allows higher learning rates, typically applied before activation functions.
+
+Q23: How do you evaluate a regression model?
+A23: I evaluate a regression model using metrics like Mean Squared Error (MSE), Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and R-squared. RMSE measures prediction error, while R-squared indicates how well the model explains the variance.
+
+Q24: What is the difference between bagging and boosting?
+A24: Bagging (e.g., Random Forest) trains models independently on random subsets and averages predictions to reduce variance. Boosting (e.g., XGBoost) trains models sequentially, focusing on correcting errors of previous models to reduce bias.
+
+Q25: What is the purpose of the softmax function in a neural network?
+A25: The softmax function converts raw scores (logits) into probabilities, summing to 1, for multi-class classification. It’s used in the output layer, e.g., in a neural network for image classification to predict probabilities across classes.
+
+Q26: How does an LSTM address the limitations of a standard RNN?
+A26: An LSTM (Long Short-Term Memory) addresses RNN limitations like vanishing gradients by using gates (forget, input, output) to control information flow. It retains long-term dependencies, making it ideal for tasks like time-series prediction or NLP.
+
+Q27: What is the difference between generative and discriminative models?
+A27: Generative models (e.g., GANs) learn the joint probability distribution P(x, y) to generate new data, while discriminative models (e.g., SVM) learn the conditional probability P(y|x) to classify data. I use generative models for data synthesis, discriminative for classification.
+
+Q28: How do you handle missing data in a dataset?
+A28: I handle missing data by imputing values (e.g., mean/median for numerical, mode for categorical), using algorithms that handle missingness (e.g., XGBoost), or removing rows/columns if the missingness is minimal and doesn’t bias the dataset.
+
+Q29: What is the purpose of dropout in a neural network?
+A29: Dropout randomly deactivates a fraction of neurons during training, preventing overfitting by reducing co-dependency among neurons. It acts as a regularization technique, forcing the network to learn more robust features.
+
+Q30: What is the difference between a validation set and a test set?
+A30: A validation set is used during training to tune hyperparameters and monitor performance, while a test set is used after training to evaluate the final model’s generalization on unseen data. I ensure the test set remains untouched until the end.
+
+Q31: How does a GAN (Generative Adversarial Network) work?
+A31: A GAN consists of a generator and a discriminator. The generator creates fake data, while the discriminator distinguishes real from fake. They’re trained together in a minimax game, improving until the generator produces realistic data, e.g., for image generation.
+
+Q32: What is the difference between feature selection and feature extraction?
+A32: Feature selection chooses a subset of existing features (e.g., using correlation analysis), while feature extraction creates new features (e.g., PCA). I use selection for interpretability, extraction for dimensionality reduction.
+
+Q33: How do you deploy a machine learning model in production?
+A33: I deploy a model by saving it (e.g., using `joblib` or `pickle`), creating a Flask API to serve predictions, and containerizing it with Docker. I deploy on a cloud platform like AWS, monitor performance, and retrain periodically with new data.
+
+Q34: What is the purpose of the ROC curve?
+A34: The ROC (Receiver Operating Characteristic) curve plots the true positive rate against the false positive rate at various thresholds. I use it to evaluate a classifier’s performance, with the Area Under the Curve (AUC) indicating overall accuracy.
+
+Q35: What is the difference between a shallow neural network and a deep neural network?
+A35: A shallow neural network has one or two hidden layers, suitable for simple tasks. A deep neural network has many layers, capturing complex patterns, used for tasks like image recognition. I use deep networks when data and computational resources allow.
+
+Q36: How do you handle categorical variables in a machine learning model?
+A36: I handle categorical variables by encoding them—using one-hot encoding for nominal data (e.g., colors) and label encoding for ordinal data (e.g., low/medium/high). For high-cardinality categories, I use target encoding to reduce dimensionality.
+
+Q37: What is the purpose of the learning rate in gradient descent?
+A37: The learning rate controls the step size in gradient descent, determining how much to adjust parameters per iteration. A high rate may overshoot the minimum, while a low rate may converge slowly. I tune it using grid search or adaptive methods like Adam.
+
+Q38: What is the difference between a sigmoid and a tanh activation function?
+A38: Sigmoid maps inputs to (0,1), used for binary classification, but can cause vanishing gradients. Tanh maps to (-1,1), centering the output, which helps with convergence. I prefer tanh for hidden layers, sigmoid for output in binary tasks.
+
+Q39: How do you evaluate a clustering algorithm?
+A39: I evaluate clustering using metrics like the Silhouette Score (measuring intra-cluster cohesion vs. inter-cluster separation), Davies-Bouldin Index, or Adjusted Rand Index (if ground truth labels exist). I also visually inspect clusters for interpretability.
+
+Q40: What is the difference between online learning and batch learning?
+A40: Online learning updates the model incrementally with each new data point, suitable for streaming data. Batch learning trains on the entire dataset at once, better for static data. I use online learning for real-time applications, batch for offline training.
+
+Q41: What is the purpose of the attention mechanism in neural networks?
+A41: The attention mechanism allows a model to focus on important parts of the input, assigning weights to different elements. In transformers, it helps capture dependencies in sequences, like focusing on relevant words in a sentence for translation.
+
+Q42: How does the Naive Bayes algorithm work?
+A42: Naive Bayes calculates the probability of a class given features, assuming feature independence (the "naive" part). It uses Bayes’ theorem, P(class|features) = P(features|class) * P(class) / P(features), and is often used for text classification, like spam detection.
+
+Q43: What is the difference between a parametric and a non-parametric model?
+A43: A parametric model has a fixed number of parameters (e.g., linear regression), while a non-parametric model grows with data (e.g., k-NN). I use parametric models for simpler tasks, non-parametric for flexibility with complex data.
+
+Q44: How do you handle multicollinearity in a dataset?
+A44: I handle multicollinearity by checking the Variance Inflation Factor (VIF) to identify correlated features, then removing or combining them. I also use dimensionality reduction techniques like PCA or regularization methods like Ridge regression.
+
+Q45: What is the purpose of the Adam optimizer?
+A45: Adam (Adaptive Moment Estimation) combines momentum and RMSProp, using adaptive learning rates based on the first (mean) and second (variance) moments of gradients. It converges faster than standard SGD, making it ideal for deep learning tasks.
+
+Q46: What is the difference between a generative AI model and a predictive AI model?
+A46: Generative AI models create new data (e.g., GPT for text generation), while predictive AI models forecast outcomes (e.g., regression for sales prediction). I use generative models for creative tasks, predictive for decision-making.
+
+Q47: How do you preprocess text data for an NLP task?
+A47: I preprocess text by tokenizing it, removing stop words, converting to lowercase, stemming or lemmatizing, and handling special characters. I then encode it using methods like TF-IDF or word embeddings (e.g., Word2Vec) for model input.
+
+Q48: What is the difference between word embeddings and bag-of-words?
+A48: Bag-of-words represents text as a sparse vector of word frequencies, ignoring context. Word embeddings (e.g., Word2Vec) map words to dense vectors in a continuous space, capturing semantic relationships. I use embeddings for better NLP performance.
+
+Q49: How does reinforcement learning work?
+A49: Reinforcement learning trains an agent to make decisions by rewarding desired actions and penalizing undesired ones in an environment. It uses a policy to maximize cumulative reward, like in Q-learning, often applied in robotics or game playing.
+
+Q50: What is the purpose of the F1-score in classification?
+A50: The F1-score is the harmonic mean of precision and recall, balancing both metrics for imbalanced datasets. I use it when false positives and false negatives are equally important, like in medical diagnosis.
+
+Q51: What is the difference between a hard margin and a soft margin SVM?
+A51: A hard margin SVM requires perfect separation of classes, which fails with noisy data. A soft margin SVM allows some misclassification, using a slack variable and a penalty parameter (C) to balance margin size and errors. I use soft margin for real-world data.
+
+Q52: How do you handle outliers in a dataset?
+A52: I handle outliers by identifying them using statistical methods (e.g., IQR, z-score), then either removing them, capping them at a threshold, or using robust models like Random Forest that are less sensitive to outliers.
+
+Q53: What is the purpose of the learning curve in machine learning?
+A53: A learning curve plots training and validation error against the training set size. I use it to diagnose underfitting (high error) or overfitting (large gap between curves) and determine if more data or model adjustments are needed.
+
+Q54: What is the difference between a static and a dynamic neural network?
+A54: A static neural network has a fixed architecture (e.g., feedforward), while a dynamic neural network adjusts its structure during inference (e.g., RNNs for variable-length sequences). I use dynamic networks for sequential tasks like speech recognition.
+
+Q55: How do you implement early stopping in a neural network?
+A55: I implement early stopping by monitoring validation loss during training. If it stops decreasing for a set number of epochs (patience), I stop training and restore the best weights, preventing overfitting and saving computation time.
+
+Q56: What is the difference between a discriminative and a generative approach in NLP?
+A56: A discriminative approach (e.g., logistic regression) models the boundary between classes, like sentiment classification. A generative approach (e.g., HMM) models the data distribution, like in language modeling. I choose based on the task’s needs.
+
+Q57: How does the k-NN algorithm work?
+A57: The k-Nearest Neighbors (k-NN) algorithm classifies a data point based on the majority class of its k nearest neighbors, using a distance metric like Euclidean distance. I use it for simple classification tasks but scale it with KD-trees for efficiency.
+
+Q58: What is the purpose of the Xavier initialization in neural networks?
+A58: Xavier initialization sets initial weights to keep the variance of activations stable across layers, avoiding vanishing or exploding gradients. It’s calculated as a random value from a distribution scaled by the number of input neurons, used with tanh or sigmoid.
+
+Q59: How do you handle class imbalance in a neural network?
+A59: I handle class imbalance in a neural network by using a weighted loss function (e.g., higher weight for the minority class), oversampling the minority class, or generating synthetic data with techniques like SMOTE. I also monitor metrics like F1-score.
+
+Q60: What is the difference between a feedforward and a recurrent neural network?
+A60: A feedforward neural network passes data in one direction, from input to output, used for static data like images. A recurrent neural network has loops, maintaining a hidden state for sequential data, like text. I use RNNs for time-series tasks.
+
+Q61: How do you perform hyperparameter tuning in machine learning?
+A61: I perform hyperparameter tuning using grid search or random search to test combinations of parameters (e.g., learning rate, number of trees). For efficiency, I use Bayesian optimization or libraries like Optuna to find the best settings.
+
+Q62: What is the purpose of the BLEU score in NLP?
+A62: The BLEU (Bilingual Evaluation Understudy) score evaluates the quality of machine-translated text by comparing it to reference translations, measuring n-gram overlap. I use it for tasks like machine translation to assess model performance.
+
+Q63: What is the difference between a deterministic and a probabilistic model?
+A63: A deterministic model produces a single output for a given input (e.g., linear regression), while a probabilistic model provides a probability distribution (e.g., Naive Bayes). I use probabilistic models when uncertainty quantification is needed.
+
+Q64: How do you handle overfitting in a decision tree?
+A64: I handle overfitting in a decision tree by pruning (removing branches with low importance), setting a minimum number of samples per split, or limiting the maximum depth. I also use ensemble methods like Random Forest to reduce variance.
+
+Q65: What is the purpose of the perplexity metric in NLP?
+A65: Perplexity measures how well a language model predicts a sample, with lower values indicating better performance. It’s the exponentiated average negative log-likelihood, often used to evaluate models like n-grams or neural language models.
+
+Q66: What is the difference between a static and a dynamic computational graph?
+A66: A static computational graph (e.g., TensorFlow v1) is defined before execution, offering optimization but less flexibility. A dynamic graph (e.g., PyTorch) is built on-the-fly, making debugging easier. I use dynamic graphs for research, static for production.
+
+Q67: How do you handle noisy data in a dataset?
+A67: I handle noisy data by removing outliers, smoothing data with techniques like moving averages, or using robust algorithms like Random Forest. I also preprocess data to correct errors, like fixing typos in text or normalizing inconsistent values.
+
+Q68: What is the purpose of the t-test in machine learning?
+A68: The t-test compares the means of two groups to determine if they’re statistically different, often used to compare model performance (e.g., accuracy of two classifiers). I use it to validate if a new model significantly improves results.
+
+Q69: How does the DBSCAN clustering algorithm work?
+A69: DBSCAN (Density-Based Spatial Clustering of Applications with Noise) groups points based on density, marking points as core, border, or noise. It uses parameters like epsilon (distance) and minPts to form clusters, ideal for non-spherical clusters.
+
+Q70: What is the difference between a classification and a regression problem?
+A70: Classification predicts discrete labels (e.g., spam/not spam), while regression predicts continuous values (e.g., house prices). I use logistic regression for classification and linear regression for regression, depending on the task.
+
+Q71: How do you implement a recommendation system using collaborative filtering?
+A71: I implement collaborative filtering by building a user-item matrix, calculating similarity (e.g., cosine similarity) between users or items, and recommending items based on similar users’ preferences. I use libraries like Surprise for efficiency.
+
+Q72: What is the purpose of the attention mechanism in transformers?
+A72: The attention mechanism in transformers weighs the importance of different input tokens, allowing the model to focus on relevant parts. Self-attention, for example, captures dependencies between words in a sentence, improving performance in NLP tasks.
+
+Q73: How do you handle time-series data in machine learning?
+A73: I handle time-series data by creating lag features, using models like ARIMA for traditional forecasting, or LSTMs for deep learning. I also preprocess data by removing trends, normalizing, and splitting it chronologically to avoid data leakage.
+
+Q74: What is the difference between a shallow and a deep learning model?
+A74: A shallow learning model (e.g., SVM) has fewer layers and learns simpler patterns, while a deep learning model (e.g., CNN) has many layers, capturing complex features. I use deep learning for tasks like image recognition with large datasets.
+
+Q75: How do you evaluate a generative model?
+A75: I evaluate a generative model using metrics like Inception Score or FID (Fréchet Inception Distance) for image quality, or perplexity for language models. I also visually inspect generated samples and use human evaluation for subjective quality.
+
+Q76: What is the purpose of the learning rate scheduler in deep learning?
+A76: A learning rate scheduler adjusts the learning rate during training, e.g., reducing it when loss plateaus. I use it to improve convergence, like with a StepLR scheduler in PyTorch, which decreases the rate every few epochs.
+
+Q77: How does the Adaboost algorithm work?
+A77: Adaboost combines weak learners (e.g., decision stumps) into a strong classifier by iteratively training models, weighting misclassified samples higher each round, and combining their predictions with weighted voting. It’s effective for classification tasks.
+
+Q78: What is the difference between a global and a local minimum in optimization?
+A78: A global minimum is the lowest point of a loss function across all parameters, while a local minimum is a low point in a specific region. I use techniques like momentum or simulated annealing to escape local minima and reach the global minimum.
+
+Q79: How do you handle data drift in a machine learning model?
+A79: I handle data drift by monitoring model performance, retraining with new data, and using techniques like online learning. I also detect drift using statistical tests (e.g., Kolmogorov-Smirnov test) on feature distributions over time.
+
+Q80: What is the purpose of the word2vec model in NLP?
+A80: Word2vec creates dense vector representations of words, capturing semantic relationships (e.g., “king” - “man” + “woman” ≈ “queen”). It uses either CBOW or Skip-gram to train, and I use it for tasks like sentiment analysis or text classification.
+
+Q81: How do you implement a chatbot using NLP?
+A81: I implement a chatbot by preprocessing user input, using an intent classifier (e.g., BERT) to understand the query, and generating responses with a rule-based system or a generative model like GPT. I deploy it with a framework like Flask for interaction.
+
+Q82: What is the difference between a supervised and a semi-supervised learning approach?
+A82: Supervised learning uses fully labeled data, while semi-supervised learning uses a mix of labeled and unlabeled data, leveraging the unlabeled data to improve performance. I use semi-supervised for tasks with limited labeled data, like image classification.
+
+Q83: How do you handle overfitting in a neural network?
+A83: I handle overfitting in a neural network by using dropout, L2 regularization, data augmentation, and early stopping. I also ensure I have enough data and use cross-validation to monitor generalization performance.
+
+Q84: What is the purpose of the AUC-ROC metric?
+A84: The AUC-ROC (Area Under the ROC Curve) measures a classifier’s ability to distinguish between classes, with 1 being perfect and 0.5 being random. I use it to evaluate models, especially for imbalanced datasets, as it’s threshold-independent.
+
+Q85: How does the YOLO algorithm work for object detection?
+A85: YOLO (You Only Look Once) divides an image into a grid, predicts bounding boxes and class probabilities for each cell, and uses non-max suppression to filter overlapping boxes. It’s fast and efficient, ideal for real-time object detection.
+
+Q86: What is the difference between a parametric and a non-parametric density estimation?
+A86: Parametric density estimation assumes a specific distribution (e.g., Gaussian) and estimates its parameters, while non-parametric (e.g., kernel density estimation) estimates the distribution directly from data. I use non-parametric for complex distributions.
+
+Q87: How do you implement a sentiment analysis model?
+A87: I implement sentiment analysis by preprocessing text (tokenizing, removing stop words), using a pre-trained model like BERT, fine-tuning it on a labeled dataset, and classifying text as positive, negative, or neutral. I evaluate using accuracy and F1-score.
+
+Q88: What is the purpose of the elbow method in clustering?
+A88: The elbow method determines the optimal number of clusters (k) in k-means by plotting the within-cluster sum of squares (WCSS) against k. I choose k at the “elbow” point, where adding more clusters yields diminishing returns.
+
+Q89: How do you handle ethical concerns in AI development?
+A89: I handle ethical concerns by ensuring fairness (e.g., removing bias from data), transparency (explaining model decisions), and privacy (anonymizing data). I also follow guidelines like GDPR and involve diverse stakeholders in the development process.
+
+Q90: What is the difference between a static and a dynamic learning rate?
+A90: A static learning rate remains constant during training, while a dynamic learning rate changes (e.g., via a scheduler like exponential decay). I use dynamic rates to improve convergence, especially in deep learning tasks.
+
+Q91: How does the BERT model work for NLP tasks?
+A91: BERT (Bidirectional Encoder Representations from Transformers) uses a transformer architecture, pre-trained on masked language modeling and next-sentence prediction. It captures bidirectional context, and I fine-tune it for tasks like question answering or classification.
+
+Q92: What is the purpose of the cross-entropy loss function?
+A92: Cross-entropy loss measures the difference between predicted probabilities and true labels, used in classification tasks. It penalizes confident wrong predictions more, guiding the model to output probabilities closer to the true distribution.
+
+Q93: How do you handle high-dimensional data in machine learning?
+A93: I handle high-dimensional data using dimensionality reduction (e.g., PCA, t-SNE), feature selection (e.g., mutual information), or embeddings (e.g., word2vec for text). This reduces noise, computation, and the risk of overfitting.
+
+Q94: What is the difference between a classification and a clustering problem?
+A94: Classification assigns data to predefined labels using supervised learning (e.g., spam detection), while clustering groups similar data points without labels using unsupervised learning (e.g., customer segmentation). I choose based on label availability.
+
+Q95: How do you implement a speech recognition system?
+A95: I implement speech recognition by preprocessing audio (e.g., MFCC features), using a deep learning model like a CNN-RNN or a transformer (e.g., Wav2Vec), and mapping outputs to text with a language model. I train on datasets like LibriSpeech.
+
+Q96: What is the purpose of the precision-recall curve?
+A96: The precision-recall curve plots precision against recall at various thresholds, used for imbalanced datasets. I use it to evaluate a classifier’s trade-off, focusing on the minority class, with a high area under the curve indicating good performance.
+
+Q97: How does the Expectation-Maximization (EM) algorithm work?
+A97: The EM algorithm iteratively estimates parameters for models with latent variables, like Gaussian Mixture Models. It alternates between the E-step (estimating latent variables) and the M-step (maximizing likelihood), converging to a local optimum.
+
+Q98: What is the difference between a shallow and a deep reinforcement learning model?
+A98: Shallow reinforcement learning uses simpler models (e.g., Q-tables), suitable for small state spaces, while deep reinforcement learning uses neural networks (e.g., DQN) to handle large, complex state spaces, like in game playing or robotics.
+
+Q99: How do you handle interpretability in a machine learning model?
+A99: I handle interpretability using techniques like SHAP or LIME to explain predictions, choosing simpler models (e.g., logistic regression) when needed, and visualizing feature importance or decision boundaries to understand model behavior.
+
+Q100: What is the purpose of the attention mechanism in computer vision?
+A100: In computer vision, the attention mechanism (e.g., in Vision Transformers) focuses on important regions of an image, improving performance in tasks like object detection. It assigns weights to patches, capturing global context more effectively than CNNs.

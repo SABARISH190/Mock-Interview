@@ -1,0 +1,199 @@
+Q1: What is the difference between `var`, `let`, and `const` in JavaScript? A1: `var` is function-scoped and can be redeclared, which can lead to issues like hoisting. `let` and `const` are block-scoped, introduced in ES6. `let` allows reassignment, while `const` does not, though objects declared with `const` can still have their properties modified.
+
+Q2: How does the CSS Box Model work? A2: The CSS Box Model represents the structure of elements as a box, consisting of content, padding, border, and margin. The total width of an element is calculated as content width + padding + border + margin, unless `box-sizing: border-box` is used, which includes padding and border in the width.
+
+Q3: What is the purpose of the `this` keyword in JavaScript? A3: The `this` keyword refers to the context in which a function is executed. Its value depends on how the function is called—in a method, it refers to the object; in a standalone function, it refers to the global object (or `undefined` in strict mode); and with `call` or `apply`, it can be explicitly set.
+
+Q4: Explain the difference between `==` and `===` in JavaScript. A4: `==` performs type coercion, converting operands to the same type before comparison, while `===` checks for strict equality, requiring both value and type to match. For example, `5 == "5"` is true, but `5 === "5"` is false.
+
+Q5: What is a RESTful API, and what are its main principles? A5: A RESTful API is an architectural style for designing networked applications, using HTTP methods like GET, POST, PUT, DELETE to perform CRUD operations. Its principles include statelessness, client-server separation, a uniform interface, and resource-based URLs (e.g., `/users/123`).
+
+Q6: How do you handle CORS issues in a web application? A6: CORS (Cross-Origin Resource Sharing) issues arise when a client requests resources from a different domain. To handle this, I configure the server to include CORS headers like `Access-Control-Allow-Origin`. In Express.js, I use the `cors` middleware to enable CORS for specific origins.
+
+Q7: What is the difference between SQL and NoSQL databases? A7: SQL databases are relational, use structured schemas, and are good for complex queries (e.g., MySQL). NoSQL databases are non-relational, flexible with unstructured data, and scale horizontally (e.g., MongoDB). I choose based on the project’s data structure and scalability needs.
+
+Q8: How do you optimize the performance of a web application? A8: I optimize by minimizing HTTP requests, using lazy loading for images, enabling browser caching, compressing assets with Gzip, and reducing JavaScript/CSS bundle sizes with tools like Webpack. On the server side, I use efficient database queries and caching with Redis.
+
+Q9: What is the difference between `GET` and `POST` HTTP methods? A9: `GET` is used to retrieve data and can be cached; parameters are sent in the URL. `POST` is used to send data to the server, typically for creating/updating resources, with parameters in the request body, making it more secure for sensitive data.
+
+Q10: What is a closure in JavaScript, and how is it used? A10: A closure is a function that retains access to its outer scope’s variables even after the outer function has finished executing. I use closures for data encapsulation, like creating private variables in a module pattern, or for event handlers that need to access outer variables.
+
+Q11: How do you handle asynchronous operations in JavaScript? A11: I handle asynchronous operations using Promises or `async/await`. For example, I use `fetch` to make API calls, chain `.then()` for success, and `.catch()` for errors. With `async/await`, I write cleaner code, like `const data = await fetch(url)`.
+
+Q12: What is the purpose of the `package.json` file in a Node.js project? A12: The `package.json` file manages project metadata, dependencies, and scripts in a Node.js project. It lists dependencies (e.g., Express), devDependencies (e.g., Jest), and scripts for running tasks like `npm start` or `npm test`.
+
+Q13: What is the difference between `flexbox` and CSS Grid? A13: Flexbox is one-dimensional, ideal for layouts in a single row or column, with properties like `justify-content` and `align-items`. CSS Grid is two-dimensional, better for complex layouts with rows and columns, using properties like `grid-template-columns`.
+
+Q14: How do you secure a REST API? A14: I secure a REST API using authentication (e.g., JWT tokens), authorization (role-based access), HTTPS for encrypted communication, input validation to prevent SQL injection, and rate limiting to mitigate DDoS attacks.
+
+Q15: What is the purpose of the `useEffect` hook in React? A15: The `useEffect` hook in React is used for side effects, like fetching data, updating the DOM, or setting up subscriptions. It runs after every render by default but can be controlled with a dependency array, e.g., `useEffect(() => { fetchData() }, [id])`.
+
+Q16: What is the difference between `npm` and `yarn`? A16: Both `npm` and `yarn` are package managers for Node.js. `npm` is the default, while `yarn` offers faster installs, better dependency locking (`yarn.lock`), and parallel downloads. I choose based on project needs, but both work well.
+
+Q17: How do you handle errors in an Express.js application? A17: In Express.js, I use middleware to handle errors. I define a custom error-handling middleware with `app.use((err, req, res, next) => { res.status(500).json({ error: err.message }) })` to catch errors and return a JSON response.
+
+Q18: What is the role of the `index.html` file in a web application? A18: The `index.html` file is the entry point for a web application, loaded by the browser first. It defines the basic structure, links to CSS/JavaScript files, and includes a root `div` (e.g., `<div id="root">`) for frameworks like React to render content.
+
+Q19: What is the difference between `state` and `props` in React? A19: In React, `state` is mutable data managed within a component, updated with `setState` or `useState`. `props` are immutable data passed from a parent to a child component. I use `state` for internal changes and `props` for communication between components.
+
+Q20: What is the purpose of the `Dockerfile` in a project? A20: A `Dockerfile` defines instructions to build a Docker image for a project, specifying the base image, dependencies, and runtime environment. I use it to ensure consistent deployment across development, testing, and production environments.
+
+Q21: How do you implement pagination in a web application? A21: I implement pagination by limiting the number of records fetched from the database (e.g., using `LIMIT` and `OFFSET` in SQL) and passing the page number via query parameters (e.g., `/api/users?page=2`). On the front end, I display page navigation buttons.
+
+Q22: What is the difference between `sessionStorage` and `localStorage`? A22: Both `sessionStorage` and `localStorage` store data in the browser, but `sessionStorage` persists only for the session (until the tab closes), while `localStorage` persists until explicitly cleared. I use them for temporary or persistent client-side data, respectively.
+
+Q23: How do you handle file uploads in a Node.js application? A23: In Node.js, I use the `multer` middleware with Express to handle file uploads. I configure `multer` to store files in a directory (e.g., `uploads/`) and access the file via `req.file` in the route handler to save its path in the database.
+
+Q24: What is the purpose of the `robots.txt` file? A24: The `robots.txt` file tells search engine crawlers which pages or sections of a website to crawl or ignore. For example, `Disallow: /admin` prevents crawling of the admin section, improving SEO control and security.
+
+Q25: How do you debug JavaScript code in the browser? A25: I debug JavaScript using the browser’s DevTools. I set breakpoints in the "Sources" tab, use `console.log` to inspect values, and check the "Network" tab for API issues. I also use `debugger` statements to pause execution at specific points.
+
+Q26: What is the difference between `innerHTML` and `textContent`? A26: `innerHTML` sets or gets the HTML content of an element, including tags, while `textContent` only deals with the text, ignoring HTML. I use `textContent` to avoid XSS risks when I don’t need to render HTML.
+
+Q27: How do you implement authentication in a web application? A27: I implement authentication using JWT (JSON Web Tokens). On login, the server generates a token with user data, which is sent to the client. The client includes the token in the `Authorization` header for subsequent requests, and the server verifies it.
+
+Q28: What is the purpose of the `meta` tags in HTML? A28: `meta` tags provide metadata about the HTML document, like character encoding (`<meta charset="UTF-8">`), viewport settings for responsive design (`<meta name="viewport">`), and SEO details (e.g., `description` or `keywords`).
+
+Q29: How do you manage state in a large React application? A29: In a large React app, I use state management libraries like Redux or Zustand. I define a global store, dispatch actions to update state, and use selectors to access state in components, ensuring predictable state changes across the app.
+
+Q30: What is the difference between `HTTP/1.1` and `HTTP/2`? A30: HTTP/1.1 handles requests sequentially, leading to head-of-line blocking, while HTTP/2 supports multiplexing, allowing multiple requests over a single connection. HTTP/2 also offers header compression and server push for better performance.
+
+Q31: How do you ensure a web application is accessible? A31: I ensure accessibility by using semantic HTML (e.g., `<nav>`, `<main>`), adding `alt` attributes to images, ensuring keyboard navigation, and using ARIA roles for dynamic content. I also test with tools like Lighthouse or screen readers.
+
+Q32: What is the purpose of the `async` attribute in a `<script>` tag? A32: The `async` attribute in a `<script>` tag allows the script to load asynchronously, without blocking HTML parsing. It’s useful for external scripts (e.g., analytics) that don’t depend on the DOM being fully loaded, but the execution order isn’t guaranteed.
+
+Q33: How do you handle database migrations in a project? A33: I use tools like Sequelize or Knex.js for database migrations. I create migration files to define schema changes (e.g., adding a table), run `migrate:up` to apply changes, and `migrate:down` to rollback, ensuring smooth schema updates in production.
+
+Q34: What is the difference between `PUT` and `PATCH` HTTP methods? A34: `PUT` updates an entire resource by replacing it with the new data, while `PATCH` updates only specific fields of a resource. For example, `PUT /users/1` might replace the entire user object, while `PATCH /users/1` might update just the email.
+
+Q35: How do you optimize images for a web application? A35: I optimize images by compressing them with tools like TinyPNG, using modern formats like WebP, resizing them to the required dimensions, and implementing lazy loading with the `loading="lazy"` attribute to reduce initial page load time.
+
+Q36: What is the purpose of the `useState` hook in React? A36: The `useState` hook in React manages state in functional components. It returns a state variable and a setter function, e.g., `const [count, setCount] = useState(0)`. I use it to handle local component state, like form inputs or toggles.
+
+Q37: How do you implement caching in a web application? A37: I implement caching using browser caching (e.g., setting `Cache-Control` headers) and server-side caching with Redis or Memcached. For APIs, I cache responses with ETags, and for database queries, I cache results to reduce load.
+
+Q38: What is the difference between `event.preventDefault()` and `event.stopPropagation()`? A38: `event.preventDefault()` stops the default action of an event (e.g., form submission), while `event.stopPropagation()` prevents the event from bubbling up to parent elements. I use them to control event behavior in JavaScript.
+
+Q39: How do you handle cross-browser compatibility? A39: I handle cross-browser compatibility by using CSS prefixes (e.g., `-webkit-`), testing on tools like BrowserStack, and using polyfills for unsupported JavaScript features. I also stick to widely supported standards and reset CSS with a normalize file.
+
+Q40: What is the purpose of the `middleware` in Express.js? A40: Middleware in Express.js are functions that process requests before they reach the route handler. I use middleware for tasks like logging (`morgan`), parsing JSON (`express.json()`), authentication, or error handling.
+
+Q41: How do you lazy load components in React? A41: I lazy load components in React using `React.lazy()` and `Suspense`. For example, `const LazyComponent = React.lazy(() => import('./Component'))`, and I wrap it in `<Suspense fallback={<div>Loading...</div>}>` to show a fallback while it loads.
+
+Q42: What is the difference between `client-side rendering` and `server-side rendering`? A42: Client-side rendering (CSR) renders content in the browser using JavaScript (e.g., React), improving interactivity but delaying initial load. Server-side rendering (SSR) renders content on the server (e.g., Next.js), improving SEO and initial load time.
+
+Q43: How do you implement a search feature in a web application? A43: I implement search by creating an API endpoint to query the database (e.g., using `LIKE` in SQL for partial matches) and a front-end input field that sends requests on user input. I debounce the input to reduce API calls and display results dynamically.
+
+Q44: What is the purpose of the `viewport` meta tag? A44: The `viewport` meta tag (`<meta name="viewport" content="width=device-width, initial-scale=1">`) ensures proper scaling on mobile devices. It sets the page width to the device’s width and prevents zooming issues, making the site responsive.
+
+Q45: How do you handle sensitive data in a web application? A45: I handle sensitive data by encrypting it in transit (HTTPS) and at rest (e.g., hashing passwords with bcrypt). I avoid logging sensitive info, use environment variables for secrets, and implement secure authentication with JWT.
+
+Q46: What is the difference between `forEach` and `map` in JavaScript? A46: `forEach` iterates over an array to perform a side effect (e.g., logging) but doesn’t return a new array. `map` creates a new array by applying a function to each element. I use `map` for transformations, like `array.map(x => x * 2)`.
+
+Q47: How do you deploy a Node.js application? A47: I deploy a Node.js app by containerizing it with Docker, pushing it to a registry, and deploying it on a platform like AWS ECS or Heroku. I use a process manager like PM2 for managing the app, and I set up a reverse proxy with Nginx.
+
+Q48: What is the purpose of the `aria-label` attribute in HTML? A48: The `aria-label` attribute provides a label for elements that lack visible text, improving accessibility for screen readers. For example, `<button aria-label="Close">X</button>` ensures the button’s purpose is clear to assistive technologies.
+
+Q49: How do you implement real-time updates in a web application? A49: I implement real-time updates using WebSockets with libraries like Socket.IO. The server pushes updates to connected clients, and the front end listens for events to update the UI, e.g., for live chat or notifications.
+
+Q50: What is the difference between `unit testing` and `integration testing`? A50: Unit testing tests individual components in isolation (e.g., a function), while integration testing tests how components work together (e.g., API endpoints with a database). I use Jest for unit tests and Supertest for integration tests.
+
+Q51: How do you handle responsive design in CSS? A51: I handle responsive design using relative units (%, vw, rem, em), media queries (`@media (max-width: 600px) { ... }`), and frameworks like Bootstrap. I also test on multiple devices to ensure the layout adapts well.
+
+Q52: What is the purpose of the `Promise` in JavaScript? A52: A `Promise` represents the eventual completion (or failure) of an asynchronous operation, allowing better handling of async code. It has states (pending, fulfilled, rejected) and methods like `.then()` and `.catch()` for chaining operations.
+
+Q53: How do you prevent SQL injection in a web application? A53: I prevent SQL injection by using prepared statements or parameterized queries (e.g., in SQLite, `db.prepare("SELECT * FROM users WHERE id = ?")`). I also sanitize user input and use an ORM like Sequelize for safer queries.
+
+Q54: What is the difference between `debouncing` and `throttling`? A54: Debouncing delays a function call until a set time has passed since the last invocation (e.g., for search input). Throttling limits the function calls to a fixed rate (e.g., for scroll events). I use both to optimize performance.
+
+Q55: How do you implement role-based access control (RBAC) in an application? A55: I implement RBAC by assigning roles to users in the database (e.g., admin, user) and checking the role in middleware. For example, in Express, I verify the JWT token and ensure the user’s role matches the required role for a route.
+
+Q56: What is the purpose of the `rel="noopener"` attribute in an `<a>` tag? A56: The `rel="noopener"` attribute prevents the new window from accessing the parent window via `window.opener`, mitigating security risks like tabnapping. I use it with `target="_blank"` links to external sites.
+
+Q57: How do you optimize database queries in a web application? A57: I optimize database queries by indexing frequently queried fields, using `SELECT` for only needed columns, avoiding `SELECT *`, and analyzing query performance with `EXPLAIN`. I also use joins instead of multiple queries when possible.
+
+Q58: What is the difference between `SPA` and `MPA`? A58: A Single Page Application (SPA) loads a single HTML page and dynamically updates content (e.g., React), providing a smoother user experience. A Multi-Page Application (MPA) reloads the entire page for each navigation, better for SEO but slower.
+
+Q59: How do you handle versioning in a REST API? A59: I handle versioning in a REST API by including the version in the URL (e.g., `/v1/users`) or in the `Accept` header (e.g., `application/vnd.api.v1+json`). This ensures backward compatibility as the API evolves.
+
+Q60: What is the purpose of the `useCallback` hook in React? A60: The `useCallback` hook memoizes a function, preventing it from being recreated on every render. I use it to optimize performance in child components that rely on the function as a prop, e.g., `const handleClick = useCallback(() => { ... }, [deps])`.
+
+Q61: How do you implement a dark mode in a web application? A61: I implement dark mode using CSS custom properties (e.g., `--bg-color`) and toggling them with a class (e.g., `.dark`). I store the user’s preference in `localStorage` and use JavaScript to apply the class based on the preference or system settings.
+
+Q62: What is the difference between `HTTP` and `HTTPS`? A62: HTTP transfers data in plain text, while HTTPS encrypts data using SSL/TLS, ensuring secure communication. I always use HTTPS in production to protect user data and improve SEO, as Google favors secure sites.
+
+Q63: How do you handle form validation in a web application? A63: I handle form validation using JavaScript libraries like Formik or React Hook Form for client-side validation, and server-side validation with libraries like Joi. I display error messages to users and ensure required fields are filled.
+
+Q64: What is the purpose of the `data-*` attributes in HTML? A64: `data-*` attributes store custom data on HTML elements, accessible via JavaScript (`element.dataset`). For example, `<div data-id="123">` can be accessed as `element.dataset.id`, useful for passing data to scripts without affecting rendering.
+
+Q65: How do you monitor the performance of a web application? A65: I monitor performance using tools like Lighthouse for front-end audits, New Relic for server-side metrics, and browser DevTools for network and rendering issues. I track metrics like page load time, TTFB, and API response times.
+
+Q66: What is the difference between `shallow copy` and `deep copy` in JavaScript? A66: A shallow copy copies only the top-level properties of an object (e.g., using `Object.assign()`), while a deep copy copies all nested levels (e.g., using `JSON.parse(JSON.stringify(obj))`). I use deep copies for nested objects to avoid reference issues.
+
+Q67: How do you implement infinite scrolling in a web application? A67: I implement infinite scrolling by listening to the `scroll` event, detecting when the user reaches the bottom of the page, and fetching more data via an API call. I append the new data to the DOM and manage loading states to avoid duplicate requests.
+
+Q68: What is the purpose of the `content-type` header in HTTP? A68: The `content-type` header specifies the media type of the request or response body, like `application/json` for JSON data or `multipart/form-data` for file uploads. It helps the client and server understand how to process the data.
+
+Q69: How do you handle internationalization (i18n) in a web application? A69: I handle internationalization using libraries like `i18next`. I store translations in JSON files (e.g., `en.json`, `fr.json`), detect the user’s locale, and dynamically load the appropriate language, ensuring the UI adapts to the user’s language.
+
+Q70: What is the difference between `cookies`, `sessionStorage`, and `localStorage`? A70: Cookies store small amounts of data (4KB) and are sent with every HTTP request, often used for authentication. `sessionStorage` (5MB) lasts for a session, and `localStorage` (5-10MB) persists until cleared, both staying client-side.
+
+Q71: How do you implement a loading spinner in a web application? A71: I implement a loading spinner using a CSS animation (e.g., a spinning circle) and toggle its visibility with JavaScript. For example, in React, I use a state variable (`isLoading`) to conditionally render the spinner during API calls.
+
+Q72: What is the purpose of the `etag` in HTTP? A72: An `ETag` (Entity Tag) is a header used for caching and validation. It identifies a specific version of a resource. If the client sends an `If-None-Match` header with the ETag, the server can respond with a 304 (Not Modified) if unchanged.
+
+Q73: How do you handle large datasets in a web application? A73: I handle large datasets by implementing pagination or infinite scrolling, using server-side filtering and sorting, and optimizing database queries with indexing. On the front end, I use virtualized lists (e.g., `react-virtualized`) to render only visible items.
+
+Q74: What is the difference between `functional` and `class` components in React? A74: Functional components are simpler, using hooks like `useState` for state, while class components use `this.state` and lifecycle methods like `componentDidMount`. I prefer functional components for their conciseness and modern React practices.
+
+Q75: How do you secure a database in a web application? A75: I secure a database by using strong credentials, limiting user permissions, encrypting sensitive data, enabling SSL for connections, and regularly backing up the database. I also use ORMs to prevent SQL injection and monitor for suspicious activity.
+
+Q76: What is the purpose of the `defer` attribute in a `<script>` tag? A76: The `defer` attribute delays script execution until the HTML is fully parsed, without blocking rendering. Unlike `async`, it guarantees the execution order, making it ideal for scripts that depend on the DOM being ready.
+
+Q77: How do you implement a file download in a web application? A77: I implement a file download by creating an endpoint on the server that sends the file with the `Content-Disposition: attachment` header. On the front end, I create a link (`<a href="/download" download>`) or use JavaScript to trigger the download.
+
+Q78: What is the difference between `REST` and `GraphQL`? A78: REST uses fixed endpoints (e.g., `/users/123`) and can over-fetch or under-fetch data. GraphQL uses a single endpoint, allowing clients to request exactly the data they need via queries, reducing over-fetching and improving flexibility.
+
+Q79: How do you handle browser compatibility for CSS? A79: I handle CSS compatibility by using vendor prefixes (`-webkit-`), testing with tools like CanIUse, and applying fallbacks for unsupported properties. I also use a CSS reset (e.g., Normalize.css) to ensure consistent rendering across browsers.
+
+Q80: What is the purpose of the `useMemo` hook in React? A80: The `useMemo` hook memoizes expensive calculations, recomputing the value only when dependencies change. For example, `const result = useMemo(() => computeExpensiveValue(a, b), [a, b])`, improving performance by avoiding unnecessary recalculations.
+
+Q81: How do you implement a notification system in a web application? A81: I implement notifications using WebSockets for real-time updates and a front-end library like `react-toastify` to display them. On the server, I store notifications in a database and send them to the client when triggered (e.g., a new message).
+
+Q82: What is the difference between `useEffect` and `useLayoutEffect` in React? A82: `useEffect` runs asynchronously after the DOM updates, while `useLayoutEffect` runs synchronously before the browser paints, useful for DOM measurements. I use `useEffect` for most side effects and `useLayoutEffect` for layout-related tasks.
+
+Q83: How do you handle API rate limiting in a web application? A83: I handle API rate limiting on the server using middleware (e.g., `express-rate-limit` in Express), setting a maximum number of requests per time window per user or IP. I also inform the client with a 429 status code when the limit is exceeded.
+
+Q84: What is the purpose of the `alt` attribute in an `<img>` tag? A84: The `alt` attribute provides alternative text for an image, used by screen readers for accessibility and displayed if the image fails to load. For example, `<img src="logo.png" alt="Company Logo">` describes the image for all users.
+
+Q85: How do you implement a progress bar in a web application? A85: I implement a progress bar using HTML/CSS (e.g., a `<div>` with a dynamic `width` styled as a bar) and update its value with JavaScript based on task progress, such as file uploads or API request completion.
+
+Q86: What is the difference between `JWT` and `OAuth`? A86: JWT (JSON Web Token) is a token format for authentication, containing user data and a signature. OAuth is an authorization protocol for granting access to third-party apps (e.g., "Sign in with Google"). I use JWT for stateless auth and OAuth for delegated access.
+
+Q87: How do you handle session management in a web application? A87: I handle session management using cookies or JWT. In Express, I use `express-session` to store session data on the server (e.g., in Redis) and a cookie on the client. For stateless apps, I use JWT stored in `localStorage` or a secure cookie.
+
+Q88: What is the purpose of the `manifest.json` file in a web application? A88: The `manifest.json` file defines metadata for a Progressive Web App (PWA), like the app name, icons, and theme color. It enables features like adding the app to the home screen and offline support when paired with a service worker.
+
+Q89: How do you optimize a React application for performance? A89: I optimize a React app by using `React.memo` to prevent unnecessary re-renders, lazy loading components with `React.lazy`, memoizing values with `useMemo` and `useCallback`, and splitting code with dynamic imports to reduce bundle size.
+
+Q90: What is the difference between `setTimeout` and `setInterval` in JavaScript? A90: `setTimeout` executes a function once after a delay (e.g., `setTimeout(func, 1000)`), while `setInterval` executes it repeatedly at a fixed interval (e.g., `setInterval(func, 1000)`). I use `clearInterval` to stop the latter when needed.
+
+Q91: How do you implement a drag-and-drop feature in a web application? A91: I implement drag-and-drop using HTML5 Drag and Drop API. I set `draggable="true"` on elements, handle events like `dragstart`, `dragover`, and `drop`, and update the DOM or state (e.g., in React) to reflect the new position of items.
+
+Q92: What is the purpose of the `cache-control` header in HTTP? A92: The `cache-control` header controls caching behavior, like `max-age=3600` to cache a resource for 1 hour, or `no-cache` to require validation with the server. I use it to improve performance by reducing server requests.
+
+Q93: How do you handle broken links in a web application? A93: I handle broken links by implementing a custom 404 page, using redirect rules for outdated URLs, and regularly auditing links with tools like Broken Link Checker. I also monitor server logs for 404 errors to identify and fix issues.
+
+Q94: What is the difference between `inline`, `block`, and `inline-block` in CSS? A94: `inline` elements (e.g., `<span>`) don’t start on a new line and ignore width/height. `block` elements (e.g., `<div>`) start on a new line and take full width. `inline-block` combines both, respecting width/height but staying inline.
+
+Q95: How do you implement a chat feature in a web application? A95: I implement a chat feature using WebSockets with Socket.IO for real-time messaging. I store messages in a database, display them in a scrollable chat window, and update the UI when new messages arrive via WebSocket events.
+
+Q96: What is the purpose of the `preconnect` resource hint in HTML? A96: The `preconnect` hint (`<link rel="preconnect" href="https://api.example.com">`) initiates an early connection to a third-party domain, reducing latency for subsequent requests, like API calls or font loading, improving performance.
+
+Q97: How do you handle user authentication in a React application? A97: I handle authentication in React by using a context (`AuthContext`) to manage user state, storing the JWT in `localStorage`, and protecting routes with a `PrivateRoute` component that redirects unauthenticated users to the login page.
+
+Q98: What is the difference between `MVC` and `MVVM` architecture? A98: MVC (Model-View-Controller) separates data (Model), UI (View), and logic (Controller), with the Controller handling user input. MVVM (Model-View-ViewModel) adds a ViewModel to bind data to the View, often used in frameworks like Angular.
+
+Q99: How do you implement a modal in a web application? A99: I implement a modal using HTML/CSS for the overlay and dialog, and JavaScript to toggle its visibility. In React, I create a `Modal` component with a state to control its display, using a portal to render it outside the main DOM tree.
+
+Q100: What is the purpose of a service worker in a web application? A100: A service worker is a script that runs in the background, enabling offline support, push notifications, and caching for PWAs. I use it to cache assets with the Cache API, ensuring the app works offline or with slow connections.

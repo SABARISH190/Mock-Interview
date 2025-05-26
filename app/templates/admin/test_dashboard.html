@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Test Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-success">
+                <h4 class="alert-heading">Admin Dashboard Test</h4>
+                <p>If you can see this message, the admin dashboard is working correctly!</p>
+                <hr>
+                <p class="mb-0">Current User: {{ current_user.username }} ({% if current_user.is_admin %}Admin{% else %}Regular User{% endif %})</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Test Navigation</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-primary me-2">Back to Dashboard</a>
+                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">User Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

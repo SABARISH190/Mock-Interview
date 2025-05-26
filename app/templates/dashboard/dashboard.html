@@ -1,0 +1,770 @@
+{% extends "base.html" %}
+
+{% block title %}{% if is_admin %}Admin {% endif %}Dashboard - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    /* Ensure the body takes full viewport height and uses flexbox */
+    html, body {
+        height: 100%;
+    }
+    
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Main content takes available space */
+    main {
+        flex: 1 0 auto;
+        width: 100%;
+        min-height: 70vh;
+        padding-bottom: 2rem;
+    }
+    
+    /* Footer stays at bottom */
+    footer {
+        flex-shrink: 0;
+    }
+    /* Common Styles */
+    .dashboard-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
+        height: 100%;
+        border-left: 4px solid #4e73df;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+        font-size: 2rem;
+        color: #4f46e5;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #2d3748;
+    }
+    
+    .stat-label {
+        color: #718096;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    /* Admin-specific overrides */
+    {% if is_admin %}
+    .admin-stat-card {
+        border-left: 4px solid #4e73df;
+    }
+    .admin-stat-card .stat-number {
+        font-size: 1.5rem;
+    }
+    .admin-stat-card .stat-label {
+        font-size: 0.8rem;
+    }
+    {% endif %}
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+        
+        .stat-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome/Admin Header -->
+    <div class="dashboard-header mb-4 p-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center w-100">
+            <div class="mb-3 mb-md-0">
+                <h1 class="h2 mb-2">
+                    {% if is_admin %}
+                        <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
+                    {% else %}
+                        Welcome back, {{ current_user.first_name or current_user.username }}!
+                    {% endif %}
+                </h1>
+                <p class="mb-0">
+                    {% if current_user.is_admin %}
+                        Overview of your platform's performance and activities
+                    {% else %}
+                        Track your interview progress and improve your skills
+                    {% endif %}
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                </a>
+            </div>
+            {% if is_admin %}
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('admin.users') }}" class="btn btn-outline-light">
+                    <i class="fas fa-users me-1"></i> Manage Users
+                </a>
+                <a href="{{ url_for('admin.questions.list_questions') }}" class="btn btn-light">
+                    <i class="fas fa-question-circle me-1"></i> Manage Questions
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 mb-4">
+        <!-- User Stats -->
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card {{ 'admin-stat-card' if is_admin }}">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">
+                            {{ stats.total_interviews|default(0) }}
+                        </div>
+                        <div class="stat-label">
+                            {% if is_admin %}Total{% else %}My{% endif %} Interviews
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card {{ 'admin-stat-card' if is_admin }}">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">
+                            {{ stats.completed_interviews|default(0) }}
+                        </div>
+                        <div class="stat-label">
+                            {% if is_admin %}Completed{% else %}My Completed{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if is_admin %}
+            <!-- Admin-specific stats -->
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card admin-stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">
+                                {{ stats.total_users|default(0) }}
+                            </div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card admin-stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">
+                                {{ stats.total_questions|default(0) }}
+                            </div>
+                            <div class="stat-label">Questions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- User-specific stats -->
+            {% if stats.avg_score is defined and stats.avg_score is not none %}
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">
+                                {{ "%.1f"|format(stats.avg_score) }}/5.0
+                            </div>
+                            <div class="stat-label">Avg. Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-6">
+            <!-- Upcoming Interviews -->
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        {% if is_admin %}Recent Activity{% else %}Upcoming Interviews{% endif %}
+                    </h5>
+                    {% if is_admin %}
+                        <a href="{{ url_for('admin.analytics') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    {% else %}
+                        <a href="{{ url_for('interview.new_interview') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i> Schedule New
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if is_admin %}
+                        {% if recent_activity %}
+                            <div class="list-group list-group-flush">
+                                {% for activity in recent_activity %}
+                                    <div class="list-group-item border-0 px-0 py-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar-sm">
+                                                    <img src="{{ activity.user.gravatar(size=40) }}" 
+                                                         class="rounded-circle" 
+                                                         alt="{{ activity.user.username }}">
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">{{ activity.title }}</h6>
+                                                <p class="text-muted small mb-0">
+                                                    {{ activity.description }}
+                                                    <span class="ms-2">{{ activity.timestamp|time_ago }}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No recent activity</p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        {% if upcoming_interviews %}
+                            <div class="list-group list-group-flush">
+                                {% for interview in upcoming_interviews %}
+                                    <div class="list-group-item border-0 px-0 py-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">{{ interview.title }}</h6>
+                                                <p class="text-muted small mb-0">
+                                                    <i class="far fa-clock me-1"></i>
+                                                    {{ interview.scheduled_at|default(interview.started_at)|datetimeformat('%b %d, %Y %I:%M %p') }}
+                                                </p>
+                                            </div>
+                                            <div class="btn-group">
+                                                <a href="{{ url_for('interview.prepare', interview_id=interview.id) }}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    Prepare
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger cancel-interview" data-interview-id="{{ interview.id }}">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-calendar-plus fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-3">No upcoming interviews scheduled</p>
+                                <a href="{{ url_for('interview.new_interview') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i> Schedule an Interview
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Completed Interviews -->
+            {% if past_interviews %}
+            <div class="card mt-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Completed Interviews
+                    </h5>
+                    <a href="{{ url_for('interview.index') }}" class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for interview in past_interviews[:3] %}
+                            <div class="list-group-item border-0 px-0 py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ interview.title }}</h6>
+                                        <p class="text-muted small mb-0">
+                                            <i class="far fa-calendar-check me-1"></i>
+                                            {{ interview.completed_at|datetimeformat('%b %d, %Y') }}
+                                            {% if interview.analysis %}
+                                                <span class="ms-2">
+                                                    <i class="fas fa-star text-warning"></i>
+                                                    {{ "%.1f"|format(interview.analysis.overall_score) }}/5.0
+                                                </span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <a href="{{ url_for('interview.view', interview_id=interview.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            View Results
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if past_interviews|length > 3 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('interview.index') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-history me-1"></i> View All Interviews
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-6">
+            {% if is_admin %}
+                <!-- Admin: Recent Users -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>Recent Users
+                        </h5>
+                        <a href="{{ url_for('admin.users') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_users %}
+                            <div class="list-group list-group-flush">
+                                {% for user in recent_users %}
+                                    <div class="list-group-item border-0 px-0 py-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <img src="{{ user.gravatar(size=40) }}" 
+                                                     class="rounded-circle" 
+                                                     alt="{{ user.username }}">
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">{{ user.full_name or user.username }}</h6>
+                                                <p class="text-muted small mb-0">
+                                                    {{ user.email }}
+                                                    <span class="badge bg-{{ 'success' if user.is_active else 'secondary' }} ms-2">
+                                                        {{ 'Active' if user.is_active else 'Inactive' }}
+                                                    </span>
+                                                    {% if user.is_admin %}
+                                                        <span class="badge bg-primary ms-1">Admin</span>
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-user-plus fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No users found</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <!-- User: Resume Upload -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-alt me-2 text-primary"></i>Your Resume
+                        </h5>
+                        {% if latest_resume %}
+                        <span class="badge bg-success">
+                            <i class="fas fa-check-circle me-1"></i>Uploaded
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if latest_resume %}
+                            <div class="resume-preview mb-4 p-3 border rounded bg-light">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ latest_resume.filename }}</h6>
+                                        <p class="text-muted small mb-2">
+                                            <i class="far fa-clock me-1"></i> 
+                                            Uploaded {{ latest_resume.uploaded_at|time_ago }}
+                                            <span class="mx-2">•</span>
+                                            <i class="fas fa-file-archive me-1"></i>
+                                            {{ "%.2f"|format(latest_resume.file_size / (1024 * 1024)) }} MB
+                                        </p>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('main.download_resume', resume_id=latest_resume.id) }}" 
+                                               class="btn btn-outline-primary">
+                                                <i class="fas fa-download me-1"></i> Download
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    onclick="confirmDeleteResume({{ latest_resume.id }})">
+                                                <i class="fas fa-trash-alt me-1"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-file-upload fa-4x text-muted mb-3"></i>
+                                <h5>No Resume Uploaded</h5>
+                                <p class="text-muted mb-4">Upload your resume to get personalized interview questions and better feedback.</p>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="upload-area p-4 border rounded bg-light text-center">
+                            <form action="{{ url_for('main.upload_resume') }}" method="POST" enctype="multipart/form-data" id="resumeUploadForm">
+                                {{ upload_form.hidden_tag() }}
+                                <input type="file" class="d-none" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                                
+                                <div id="dropArea" class="p-4 border-2 border-dashed rounded cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                    <h5>Drag & drop your resume here</h5>
+                                    <p class="text-muted small mb-3">or click to browse files</p>
+                                    <div class="file-info d-none">
+                                        <span class="file-name font-weight-bold"></span>
+                                        <span class="file-size text-muted"></span>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary mt-3" id="uploadButton" {% if not latest_resume %}disabled{% endif %}>
+                                    <i class="fas fa-upload me-1"></i> Upload Resume
+                                </button>
+                                <p class="small text-muted mt-2 mb-0">
+                                    Supported formats: PDF, DOC, DOCX (Max 5MB)
+                                </p>
+                            </form>
+                        </div>
+                        
+                        {% if latest_resume %}
+                        <div class="alert alert-info mt-3 mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Uploading a new resume will replace your existing one.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Delete Resume Modal -->
+                <div class="modal fade" id="deleteResumeModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Delete Resume</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete your resume? This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">
+                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User: Recent Performance -->
+                <div class="card h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>Your Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if past_interviews %}
+                            <div class="mb-4">
+                                <h6 class="text-muted mb-3">Interview Performance</h6>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ (stats.avg_score / 5 * 100) if stats.avg_score else 0 }}%" 
+                                         aria-valuenow="{{ stats.avg_score or 0 }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="5">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-muted">0.0</small>
+                                    <small class="text-muted">5.0</small>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <span class="badge bg-primary">
+                                        Average Score: {{ "%.1f"|format(stats.avg_score) if stats.avg_score else 'N/A' }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-3">No interview history yet</p>
+                                <a href="{{ url_for('interview.new_interview') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i> Start an Interview
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Additional Rows -->
+    {% if is_admin %}
+        <!-- Admin: System Status -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-server me-2"></i>System Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-3 rounded-circle bg-light me-3">
+                                        <i class="fas fa-database text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Database</h6>
+                                        <p class="text-success mb-0">
+                                            <i class="fas fa-circle-check me-1"></i> Operational
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-3 rounded-circle bg-light me-3">
+                                        <i class="fas fa-bolt text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">AI Service</h6>
+                                        <p class="text-success mb-0">
+                                            <i class="fas fa-circle-check me-1"></i> Operational
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-3 rounded-circle bg-light me-3">
+                                        <i class="fas fa-envelope text-info"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Email Service</h6>
+                                        <p class="text-success mb-0">
+                                            <i class="fas fa-circle-check me-1"></i> Operational
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Function to handle resume deletion confirmation
+    function confirmDeleteResume(resumeId) {
+        const modal = new bootstrap.Modal(document.getElementById('deleteResumeModal'));
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        
+        // Set up the delete URL
+        confirmBtn.href = "{{ url_for('main.delete_resume', resume_id=0) }}".replace('0', resumeId);
+        
+        // Show the modal
+        modal.show();
+    }
+    
+    // Handle interview cancellation with event delegation
+    document.addEventListener('click', function(event) {
+        const cancelBtn = event.target.closest('.cancel-interview');
+        if (!cancelBtn) return;
+        
+        const interviewId = cancelBtn.dataset.interviewId;
+        if (!interviewId) return;
+        
+        if (confirm('Are you sure you want to cancel this interview? This action cannot be undone.')) {
+            fetch(`/interview/${interviewId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload the page to update the UI
+                    window.location.reload();
+                } else {
+                    alert('Failed to cancel interview: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error cancelling interview:', error);
+                alert('An error occurred while cancelling the interview. Please try again.');
+            });
+        }
+    });
+    
+    // File upload handling with drag and drop
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('resume');
+        const fileInfo = document.querySelector('.file-info');
+        const fileName = document.querySelector('.file-name');
+        const fileSize = document.querySelector('.file-size');
+        const uploadButton = document.getElementById('uploadButton');
+        
+        if (dropArea && fileInput) {
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            // Handle dropped files
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            // Open file dialog when clicking the drop area
+            dropArea.addEventListener('click', () => fileInput.click());
+            
+            // Handle file selection
+            fileInput.addEventListener('change', handleFiles);
+        }
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight() {
+            dropArea.classList.add('border-primary', 'bg-light');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('border-primary', 'bg-light');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files } });
+        }
+        
+        function handleFiles(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const file = files[0];
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                
+                // Validate file type
+                const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please upload a valid file type (PDF, DOC, or DOCX)');
+                    return;
+                }
+                
+                // Validate file size (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+                
+                // Update UI with file info
+                fileName.textContent = file.name;
+                fileSize.textContent = `(${fileSizeMB} MB)`;
+                document.querySelector('.file-info').classList.remove('d-none');
+                uploadButton.disabled = false;
+                
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'alert alert-success mt-2 mb-0';
+                successMessage.innerHTML = '<i class="fas fa-check-circle me-2"></i>File selected and ready to upload';
+                dropArea.parentNode.insertBefore(successMessage, dropArea.nextSibling);
+                
+                // Remove success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 3000);
+            }
+        }
+    });
+</script>
+{% endblock %}

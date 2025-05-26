@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Dashboard - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+.interview-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid #4f46e5;
+}
+
+.interview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+}
+
+.stat-card {
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.progress-thin {
+  height: 6px;
+}
+
+.progress-bar-score {
+  transition: width 0.6s ease;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Interview Dashboard</h1>
+        <a href="{{ url_for('interview.new_interview') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Interview
+        </a>
+    </div>
+    
+    <!-- Stats Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card bg-white shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fas fa-calendar-check text-primary stat-icon"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Upcoming</h6>
+                        <h3 class="mb-0">{{ stats.upcoming_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-white shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fas fa-check-circle text-success stat-icon"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Completed</h6>
+                        <h3 class="mb-0">{{ stats.completed_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-white shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="bg-info bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fas fa-star text-info stat-icon"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Average Score</h6>
+                        <h3 class="mb-0">{{ "%0.1f"|format(stats.avg_score|float) if stats.avg_score else 'N/A' }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Upcoming Interviews -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0">Upcoming Interviews</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if upcoming_interviews %}
+                        <div class="list-group list-group-flush">
+                            {% for interview in upcoming_interviews %}
+                            <a href="{{ url_for('interview.prepare', interview_id=interview.id) }}" class="list-group-item list-group-item-action p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ interview.title }}</h6>
+                                        <p class="text-muted small mb-0">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            {% if interview.started_at %}
+                                                {{ interview.started_at.strftime('%b %d, %Y') }}
+                                            {% else %}
+                                                Not started
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary status-badge">
+                                            {{ interview.status|title }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-calendar-plus fa-3x text-muted opacity-25"></i>
+                            </div>
+                            <h6 class="text-muted mb-2">No upcoming interviews</h6>
+                            <p class="text-muted small mb-0">Schedule your first interview to get started</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Interviews -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0">Recent Interviews</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_interviews %}
+                        <div class="list-group list-group-flush">
+                            {% for interview in recent_interviews %}
+                            <a href="{{ url_for('interview.view', interview_id=interview.id) }}" class="list-group-item list-group-item-action p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ interview.title }}</h6>
+                                        <p class="text-muted small mb-0">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            {{ interview.completed_at.strftime('%b %d, %Y') if interview.completed_at else interview.scheduled_at.strftime('%b %d, %Y') }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        {%- if interview.status == 'completed' -%}
+                                        <span class="badge bg-success bg-opacity-10 text-success status-badge">
+                                            Completed
+                                        </span>
+                                        {%- else -%}
+                                        <span class="badge bg-warning bg-opacity-10 text-warning status-badge">
+                                            {{ interview.status|title }}
+                                        </span>
+                                        {%- endif -%}
+                                    </div>
+                                </div>
+                                {% if interview.status == 'completed' and interview.analysis and interview.analysis.overall_score is not none %}
+                                {% set score = interview.analysis.overall_score %}
+                                {% set progress_class = 'bg-success' if score >= 70 else 'bg-warning' if score >= 50 else 'bg-danger' %}
+                                <div class="mt-2">
+                                    <div class="progress progress-thin">
+                                        <div 
+                                            class="progress-bar {{ progress_class }} progress-bar-score" 
+                                            role="progressbar" 
+                                            style="width: {{ score }}%" 
+                                            aria-valuenow="{{ score }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <div class="text-end small text-muted mt-1">
+                                        {{ "%d"|format(score) }}/100
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <small class="text-muted">
+                                    {% set feedback_count = interview.questions|selectattr('feedback')|list|length %}
+                                    {{ feedback_count }} feedback item{% if feedback_count != 1 %}s{% endif %}
+                                </small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer bg-white text-center">
+                            <a href="{{ url_for('interview.index') }}" class="btn btn-sm btn-link">
+                                View All Interviews <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clipboard-list fa-3x text-muted opacity-25"></i>
+                            </div>
+                            <h6 class="text-muted mb-2">No interview history</h6>
+                            <p class="text-muted small mb-0">Your completed interviews will appear here</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <a href="{{ url_for('interview.new_interview') }}" class="btn btn-outline-primary w-100 h-100 py-3">
+                                <i class="fas fa-plus-circle mb-2 d-block"></i>
+                                New Interview
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="#" class="btn btn-outline-secondary w-100 h-100 py-3" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
+                                <i class="fas fa-book mb-2 d-block"></i>
+                                Prepare
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ url_for('interview.index') }}" class="btn btn-outline-secondary w-100 h-100 py-3">
+                                <i class="fas fa-history mb-2 d-block"></i>
+                                View History
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <a href="{{ url_for('main.profile') }}" class="btn btn-outline-secondary w-100 h-100 py-3">
+                                <i class="fas fa-user-edit mb-2 d-block"></i>
+                                Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Coming Soon Modal -->
+<div class="modal fade" id="comingSoonModal" tabindex="-1" aria-labelledby="comingSoonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="comingSoonModalLabel">Coming Soon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-tools fa-3x text-primary mb-3"></i>
+                <h5>This feature is coming soon!</h5>
+                <p class="text-muted">We're working hard to bring you this functionality. Please check back later.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Any additional JavaScript can go here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

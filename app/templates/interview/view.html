@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Results - {{ interview.title }}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .interview-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .score-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    .response-card {
+        border-left: 4px solid #4f46e5;
+        transition: transform 0.2s ease;
+    }
+    
+    .response-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .skill-tag {
+        display: inline-block;
+        background-color: #e0e7ff;
+        color: #4f46e5;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feedback-item {
+        border-left: 3px solid #4f46e5;
+        padding-left: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .transcript-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="interview-header text-center mb-4">
+        <div class="container">
+            <h1 class="h3 mb-2">Interview Results</h1>
+            <h2 class="h4 mb-0">{{ interview.title }}</h2>
+            <p class="mb-0 mt-2">
+                <i class="far fa-calendar-alt me-1"></i>
+                {{ interview.completed_at.strftime('%B %d, %Y %I:%M %p') }}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Score Summary -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted mb-3">Overall Score</h5>
+                    <div class="score-circle mb-3">
+                        {{ "%d"|format(interview.analysis.overall_score) if interview.analysis and interview.analysis.overall_score is not none else 'N/A' }}
+                    </div>
+                    {% if interview.analysis and interview.analysis.overall_score is not none %}
+                    <p class="mb-0">
+                        <span class="badge bg-{{ 'success' if interview.analysis.overall_score >= 70 else 'warning' if interview.analysis.overall_score >= 50 else 'danger' }}">
+                            {{ 'Excellent' if interview.analysis.overall_score >= 70 else 'Good' if interview.analysis.overall_score >= 50 else 'Needs Improvement' }}
+                        </span>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Skills Assessment</h5>
+                    {% if analysis %}
+                        <div class="row">
+                            {% if analysis.technical_score is not none %}
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span>Technical Skills</span>
+                                    <span class="text-muted small">{{ "%d"|format(analysis.technical_score) }}/100</span>
+                                </div>
+                                {% set tech_class = 'bg-success' if analysis.technical_score >= 70 else 'bg-warning' if analysis.technical_score >= 50 else 'bg-danger' %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {{ tech_class }}" 
+                                         role="progressbar" 
+                                         style="width: {{ analysis.technical_score }}%" 
+                                         aria-valuenow="{{ analysis.technical_score }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if analysis.communication_score is not none %}
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span>Communication</span>
+                                    <span class="text-muted small">{{ "%d"|format(analysis.communication_score) }}/100</span>
+                                </div>
+                                {% set comm_class = 'bg-success' if analysis.communication_score >= 70 else 'bg-warning' if analysis.communication_score >= 50 else 'bg-danger' %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {{ comm_class }}" 
+                                         role="progressbar" 
+                                         style="width: {{ analysis.communication_score }}%" 
+                                         aria-valuenow="{{ analysis.communication_score }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if analysis.problem_solving_score is not none %}
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span>Problem Solving</span>
+                                    <span class="text-muted small">{{ "%d"|format(analysis.problem_solving_score) }}/100</span>
+                                </div>
+                                {% set ps_class = 'bg-success' if analysis.problem_solving_score >= 70 else 'bg-warning' if analysis.problem_solving_score >= 50 else 'bg-danger' %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {{ ps_class }}" 
+                                         role="progressbar" 
+                                         style="width: {{ analysis.problem_solving_score }}%" 
+                                         aria-valuenow="{{ analysis.problem_solving_score }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if analysis.confidence_score is not none %}
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span>Confidence</span>
+                                    <span class="text-muted small">{{ "%d"|format(analysis.confidence_score) }}/100</span>
+                                </div>
+                                {% set conf_class = 'bg-success' if analysis.confidence_score >= 70 else 'bg-warning' if analysis.confidence_score >= 50 else 'bg-danger' %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {{ conf_class }}" 
+                                         role="progressbar" 
+                                         style="width: {{ analysis.confidence_score }}%" 
+                                         aria-valuenow="{{ analysis.confidence_score }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No skills assessment data available for this interview.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Responses & Feedback -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Question & Answer Transcript</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="transcript-container p-3">
+                        {% for response in interview.responses %}
+                        <div class="response-card card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Question {{ loop.index }}</h6>
+                                <p class="card-text fw-bold mb-3">{{ response.question_text }}</p>
+                                
+                                <div class="mb-3">
+                                    <h6 class="text-muted small mb-2">Your Response:</h6>
+                                    <div class="bg-light p-3 rounded">
+                                        {{ response.answer_text|default('No response provided', true) }}
+                                    </div>
+                                </div>
+                                
+                                {% if response.analysis %}
+                                <div class="feedback-item">
+                                    <h6 class="text-muted small mb-2">Feedback:</h6>
+                                    <p class="mb-2">{{ response.analysis.feedback }}</p>
+                                    <div class="d-flex flex-wrap">
+                                        <div class="me-3">
+                                            <span class="text-muted small">Score:</span>
+                                            <span class="ms-1 fw-bold">{{ response.analysis.score }}/100</span>
+                                        </div>
+                                        {% if response.analysis.keywords_missed %}
+                                        <div>
+                                            <span class="text-muted small">Keywords missed:</span>
+                                            <span class="ms-1">{{ response.analysis.keywords_missed|join(', ') }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Overall Feedback -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Overall Feedback</h5>
+                </div>
+                <div class="card-body">
+                    {% if interview.overall_feedback %}
+                        {{ interview.overall_feedback|safe }}
+                    {% else %}
+                        <p class="text-muted">No overall feedback available.</p>
+                    {% endif %}
+                    
+                    <hr class="my-4">
+                    
+                    <h6 class="mb-3">Areas for Improvement</h6>
+                    <ul class="list-unstyled">
+                        {% for area in interview.improvement_areas %}
+                            <li class="mb-2">
+                                <i class="fas fa-chevron-right text-primary me-2"></i>
+                                {{ area }}
+                            </li>
+                        {% else %}
+                            <li class="text-muted">No specific areas for improvement identified.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Key Takeaways -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Key Takeaways</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for takeaway in interview.key_takeaways %}
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                            {{ loop.index }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0">{{ takeaway }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="text-muted">No key takeaways available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-4 mb-5">
+        <a href="{{ url_for('interview.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+        <div>
+            <a href="#" class="btn btn-outline-primary me-2">
+                <i class="fas fa-download me-2"></i>Download Report
+            </a>
+            <a href="{{ url_for('interview.new_interview') }}" class="btn btn-primary">
+                <i class="fas fa-redo me-2"></i>Retake Interview
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Add any additional JavaScript functionality here
+    });
+</script>
+{% endblock %}

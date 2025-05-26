@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}Import Questions - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            <i class="fas fa-file-import me-2"></i>Import Questions
+        </h1>
+        <a href="{{ url_for('admin_questions.question_list') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Questions
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i> Import Instructions
+                        </h5>
+                        <p class="mb-0">
+                            Import questions from a text file. The file should be in the following format:
+                        </p>
+                        <pre class="bg-dark text-light p-3 mt-2 rounded">Q: What is your experience with Python?
+A: I have 3 years of experience with Python, including web development with Flask and Django.
+
+Q: How do you handle errors in Python?
+A: I use try-except blocks to handle exceptions and ensure the application doesn't crash.</pre>
+                        <p class="mt-3 mb-0">
+                            <strong>Note:</strong> Each question should start with 'Q:' and the corresponding answer with 'A:'.
+                            Separate questions with a blank line.
+                        </p>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data" id="importForm" class="mt-4">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.domain.label(class="form-label") }}
+                                {{ form.domain(class="form-select" + (" is-invalid" if form.domain.errors else "")) }}
+                                {% if form.domain.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.domain.errors[0] }}
+                                    </div>
+                                {% endif %}
+                                
+                                <div id="newDomainGroup" class="mt-2" style="display: none;">
+                                    <label for="new_domain" class="form-label">New Domain Name</label>
+                                    <input type="text" class="form-control" id="new_domain" name="new_domain">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.question_type.label(class="form-label") }}
+                                {{ form.question_type(class="form-select" + (" is-invalid" if form.question_type.errors else "")) }}
+                                {% if form.question_type.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.question_type.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.file.label(class="form-label") }}
+                            {{ form.file(class="form-control" + (" is-invalid" if form.file.errors else "")) }}
+                            {% if form.file.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.file.errors[0] }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Upload a .txt file with questions and answers in the specified format.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('admin_questions.question_list') }}" class="btn btn-outline-secondary me-md-2">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-1"></i> Import Questions
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if recent_imports %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Imports
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Domain</th>
+                                    <th>Type</th>
+                                    <th>Questions</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in recent_imports %}
+                                <tr>
+                                    <td>{{ import.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ import.domain }}</td>
+                                    <td>{{ import.question_type|title }}</td>
+                                    <td>{{ import.count }}</td>
+                                    <td>
+                                        {% if import.status == 'success' %}
+                                            <span class="badge bg-success">Success</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card mt-4">
+                <div class="card-body text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                    <p class="mb-0">No recent imports found</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle new domain input
+        const domainSelect = document.getElementById('domain');
+        const newDomainGroup = document.getElementById('newDomainGroup');
+        
+        function toggleNewDomainInput() {
+            if (domainSelect.value === '_add_new') {
+                newDomainGroup.style.display = 'block';
+                // Add required attribute to new domain input
+                const newDomainInput = document.getElementById('new_domain');
+                if (newDomainInput) {
+                    newDomainInput.required = true;
+                }
+            } else {
+                newDomainGroup.style.display = 'none';
+                // Remove required attribute when not needed
+                const newDomainInput = document.getElementById('new_domain');
+                if (newDomainInput) {
+                    newDomainInput.required = false;
+                }
+            }
+        }
+        
+        // Initial check
+        toggleNewDomainInput();
+        
+        // Add event listener
+        if (domainSelect) {
+            domainSelect.addEventListener('change', toggleNewDomainInput);
+        }
+        
+        // Form validation
+        const form = document.getElementById('importForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Client-side validation can be added here if needed
+                return true;
+            });
+        }
+    });
+</script>
+{% endblock %}

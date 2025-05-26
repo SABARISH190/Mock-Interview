@@ -1,0 +1,10 @@
+This directory contains placeholder images for the application. 
+In a production environment, these would be replaced with proper images for:
+
+1. fullstack.jpg - Image representing Full Stack development
+2. ai-ml.jpg - Image representing AI/ML engineering
+3. data-science.jpg - Image representing Data Science/Analytics
+4. hero-illustration.svg - Hero image for the homepage
+5. default.jpg - Default profile picture
+
+For a real deployment, it is recommended to use properly licensed images.

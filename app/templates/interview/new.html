@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block title %}New Interview - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+<style>
+    /* Main container */
+    .interview-form-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    /* Form card */
+    .form-card {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    /* Form header */
+    .form-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-header h1 {
+        font-weight: 600;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    .form-header p {
+        opacity: 0.9;
+        margin: 0.5rem 0 0;
+    }
+    
+    /* Form body */
+    .form-body {
+        padding: 0 2rem 2rem;
+    }
+    
+    /* Form sections */
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding: 1.5rem;
+        background: #f9fafb;
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+        border-radius: 2px;
+    }
+    
+    /* Form controls */
+    .form-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        padding: 0.625rem 1rem;
+        transition: all 0.2s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Buttons */
+    .btn {
+        font-weight: 500;
+        border-radius: 0.5rem;
+        padding: 0.625rem 1.5rem;
+        transition: all 0.2s;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1);
+    }
+    
+    .btn-outline-secondary {
+        border: 1px solid #d1d5db;
+    }
+    
+    .btn-outline-secondary:hover {
+        background-color: #f3f4f6;
+        border-color: #9ca3af;
+    }
+    
+    /* Form text */
+    .form-text {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .form-body {
+            padding: 0 1rem 1.5rem;
+        }
+        
+        .form-section {
+            padding: 1.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="interview-form-container">
+    <div class="form-card">
+        <!-- Form Header -->
+        <div class="form-header">
+            <h1>Schedule a New Interview</h1>
+            <p>Fill in the details below to schedule your mock interview session</p>
+        </div>
+        
+        <!-- Form Body -->
+        <div class="form-body">
+            <form id="newInterviewForm" method="POST" action="{{ url_for('interview.new_interview') }}" novalidate>
+                {{ form.hidden_tag() }}
+                
+                <!-- Interview Details Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Interview Details</h2>
+                    
+                    <div class="row g-4">
+                        <!-- Title -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.title.label(class="form-label") }}
+                                {{ form.title(class="form-control" + (' is-invalid' if form.title.errors else ''), placeholder="E.g., Senior Developer Mock Interview") }}
+                                {% if form.title.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.title.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Domain -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.domain.label(class="form-label") }}
+                                {{ form.domain(class="form-select" + (' is-invalid' if form.domain.errors else '')) }}
+                                {% if form.domain.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.domain.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Difficulty -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.difficulty.label(class="form-label") }}
+                                {{ form.difficulty(class="form-select" + (' is-invalid' if form.difficulty.errors else '')) }}
+                                {% if form.difficulty.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.difficulty.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Scheduled Date/Time -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.scheduled_at.label(class="form-label") }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    {{ form.scheduled_at(class="form-control datetimepicker" + (' is-invalid' if form.scheduled_at.errors else '')) }}
+                                </div>
+                                {% if form.scheduled_at.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.scheduled_at.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Resume Selection -->
+                        {% if form.resume_id.choices %}
+                        <div class="col-12">
+                            <div class="form-group">
+                                {{ form.resume_id.label(class="form-label") }}
+                                {{ form.resume_id(class="form-select" + (' is-invalid' if form.resume_id.errors else '')) }}
+                                {% if form.resume_id.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.resume_id.errors[0] }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Select a resume to use for this interview (optional)</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Additional Notes -->
+                        <div class="col-12">
+                            <div class="form-group">
+                                {{ form.notes.label(class="form-label") }}
+                                {{ form.notes(class="form-control" + (' is-invalid' if form.notes.errors else ''), rows="4", 
+                                    placeholder="Any specific areas you'd like to focus on during the interview...") }}
+                                {% if form.notes.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.notes.errors[0] }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Help us tailor your interview experience by providing any additional context or requirements.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-between align-items-center pt-4">
+                    <a href="{{ url_for('interview.index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Schedule Interview <i class="fas fa-calendar-check ms-2"></i>
+                    </button>
+                </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize flatpickr for datetime picker
+    flatpickr("#scheduled_at", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        minDate: "today",
+        time_24hr: true,
+        minuteIncrement: 15,
+        defaultDate: new Date(Date.now() + 3600000), // Default to 1 hour from now
+        minTime: "09:00",
+        maxTime: "20:00"
+    });
+
+    // Form validation
+    const form = document.getElementById('newInterviewForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Client-side validation
+            const title = document.getElementById('title');
+            const domain = document.getElementById('domain');
+            const difficulty = document.getElementById('difficulty');
+            const scheduledAt = document.getElementById('scheduled_at');
+            
+            let isValid = true;
+            
+            // Validate required fields
+            if (!title.value.trim()) {
+                title.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!domain.value) {
+                domain.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!difficulty.value) {
+                difficulty.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!scheduledAt.value) {
+                scheduledAt.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll to first invalid field
+                const firstInvalid = form.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+            
+            return true;
+        });
+
+        // Remove invalid class when user starts typing/selecting
+        form.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+            
+            // For select elements
+            input.addEventListener('change', function() {
+                if (this.value) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

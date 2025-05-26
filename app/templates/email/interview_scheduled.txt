@@ -1,0 +1,32 @@
+Your {{ interview.domain }} Mock Interview is Scheduled!
+
+Hello {{ user.first_name }},
+
+Your mock interview for {{ interview.domain }} has been successfully scheduled. Here are the details:
+
+Interview Details:
+-----------------
+Interview ID: #{{ '%04d' % interview.id }}
+Domain: {{ interview.domain }}
+Scheduled For: {{ interview.scheduled_at.strftime('%A, %B %d, %Y at %I:%M %p') }}
+Duration: Approximately 30-45 minutes
+
+How to Prepare:
+--------------
+- Make sure you're in a quiet, well-lit room
+- Use a computer with a stable internet connection
+- Have your resume and any relevant materials ready
+- Test your microphone and webcam beforehand
+
+Join your interview here:
+{{ url_for('interview.join', interview_id=interview.id, _external=True) }}
+
+If you need to reschedule or have any questions, please contact our support team.
+
+Good luck with your interview preparation!
+
+The Interview Simulator AI Team
+
+--
+Interview Simulator AI
+This is an automated message, please do not reply to this email.

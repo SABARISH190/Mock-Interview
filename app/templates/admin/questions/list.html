@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+
+{% block title %}Question Bank - Admin Panel{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .table-responsive {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .table {
+        margin-bottom: 0;
+    }
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: #4e73df;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+    }
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        line-height: 1;
+    }
+    .page-actions {
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-question-circle me-2"></i>Question Bank Management
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Admin</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Question Bank</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="page-actions">
+        <div class="btn-group me-2">
+            <a href="{{ url_for('admin.admin_questions.add_question') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-1"></i> Add Question
+            </a>
+            <a href="{{ url_for('admin_questions.import_questions') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-upload me-1"></i> Import
+            </a>
+        </div>
+    </div>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Questions</h5>
+        <div>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                <i class="bi bi-funnel"></i> Filters
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="collapse {% if current_domain or current_type or search %}show{% endif %}" id="filtersCollapse">
+        <div class="card-body bg-light">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="domain" class="form-label">Domain</label>
+                    <select name="domain" id="domain" class="form-select">
+                        <option value="">All Domains</option>
+                        {% for domain in domains %}
+                            <option value="{{ domain }}" {% if domain == current_domain %}selected{% endif %}>
+                                {{ domain }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="type" class="form-label">Question Type</label>
+                    <select name="type" id="type" class="form-select">
+                        <option value="">All Types</option>
+                        {% for type in question_types %}
+                            <option value="{{ type }}" {% if type == current_type %}selected{% endif %}>
+                                {{ type|title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="search" name="search" 
+                               placeholder="Search questions or answers..." value="{{ search or '' }}">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a href="{{ url_for('admin.admin_questions.question_list') }}" class="btn btn-outline-secondary w-100">
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Questions Table -->
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Domain</th>
+                    <th>Type</th>
+                    <th>Difficulty</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions.items %}
+                <tr>
+                    <td>{{ question.id }}</td>
+                    <td>
+                        <div class="fw-bold">{{ question.question_text|truncate(80) }}</div>
+                        <small class="text-muted">{{ question.answer_text|truncate(60) }}</small>
+                    </td>
+                    <td>{{ question.domain }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'primary' if question.question_type == 'technical' else 'success' if question.question_type == 'behavioral' else 'info' }}">
+                            {{ question.question_type|title }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if question.difficulty %}
+                            <span class="badge bg-{{ 'success' if question.difficulty == 'easy' else 'warning' if question.difficulty == 'medium' else 'danger' }}">
+                                {{ question.difficulty|title }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">Not Set</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ url_for('admin_questions.edit_question', question_id=question.id) }}" 
+                               class="btn btn-outline-primary btn-sm" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="btn btn-outline-danger btn-sm delete-question" 
+                                    data-id="{{ question.id }}" 
+                                    data-name="{{ question.question_text|truncate(30) }}"
+                                    title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="text-muted">No questions found.</div>
+                        <a href="{{ url_for('admin_questions.add_question') }}" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-circle"></i> Add Your First Question
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if questions.pages > 1 %}
+    <div class="card-footer">
+        <nav aria-label="Question pagination">
+            <ul class="pagination justify-content-center mb-0">
+                {% if questions.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.admin_questions.question_list', page=questions.prev_num, 
+                            domain=current_domain, type=current_type, search=search) }}">
+                            &laquo;
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in questions.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
+                    {% if page_num %}
+                        {% if page_num != questions.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin.admin_questions.question_list', page=page_num, 
+                                    domain=current_domain, type=current_type, search=search) }}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">
+                                    {{ page_num }}
+                                </span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if questions.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.admin_questions.question_list', page=questions.next_num, 
+                            domain=current_domain, type=current_type, search=search) }}">
+                            &raquo;
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the question: <strong id="questionToDelete"></strong>?</p>
+                    <p class="text-danger">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST" action="">
+                        <button type="submit" class="btn btn-danger">Delete Question</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Delete confirmation modal
+        const deleteButtons = document.querySelectorAll('.delete-question');
+        const deleteForm = document.getElementById('deleteForm');
+        const questionToDelete = document.getElementById('questionToDelete');
+        
+        if (deleteButtons.length > 0) {
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-id');
+                    const questionText = this.getAttribute('data-name');
+                    
+                    // Update modal content
+                    questionToDelete.textContent = questionText;
+                    deleteForm.action = `/admin/questions/${questionId}/delete`;
+                    
+                    // Show modal
+                    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    modal.show();
+                });
+            });
+            
+            // Handle delete form submission
+            deleteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message and reload the page
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                        if (modal) modal.hide();
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the question.');
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

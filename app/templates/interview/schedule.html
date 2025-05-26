@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Schedule Interview{% endblock %}
+
+{% block head %}
+<style>
+    .schedule-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .schedule-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .domain-card {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        height: 100%;
+    }
+    
+    .domain-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .domain-card.selected {
+        border: 2px solid #4f46e5;
+    }
+    
+    .domain-card img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+    
+    .domain-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .difficulty-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+    
+    .difficulty-easy {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    
+    .difficulty-medium {
+        background-color: #fef3c7;
+        color: #a16207;
+    }
+    
+    .difficulty-hard {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Domain selection
+        const domainCards = document.querySelectorAll('.domain-card');
+        const domainInput = document.getElementById('selected-domain');
+        
+        domainCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all cards
+                domainCards.forEach(c => c.classList.remove('selected'));
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                // Set the hidden input value
+                domainInput.value = this.dataset.domain;
+            });
+        });
+        
+        // Difficulty selection
+        const difficultyCards = document.querySelectorAll('.difficulty-card');
+        const difficultyInput = document.getElementById('selected-difficulty');
+        
+        difficultyCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all cards
+                difficultyCards.forEach(c => c.classList.remove('selected'));
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                // Set the hidden input value
+                difficultyInput.value = this.dataset.difficulty;
+            });
+        });
+        
+        // Set default selections if form has values (e.g. on form error)
+        if (domainInput.value) {
+            const selectedDomainCard = document.querySelector(`.domain-card[data-domain="${domainInput.value}"]`);
+            if (selectedDomainCard) {
+                selectedDomainCard.classList.add('selected');
+            }
+        }
+        
+        if (difficultyInput.value) {
+            const selectedDifficultyCard = document.querySelector(`.difficulty-card[data-difficulty="${difficultyInput.value}"]`);
+            if (selectedDifficultyCard) {
+                selectedDifficultyCard.classList.add('selected');
+            }
+        }
+        
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(event) {
+            if (!domainInput.value) {
+                event.preventDefault();
+                alert('Please select a domain for your interview.');
+            }
+            
+            if (!difficultyInput.value) {
+                event.preventDefault();
+                alert('Please select a difficulty level for your interview.');
+            }
+        });
+    });
+</script>
+{% endblock %}

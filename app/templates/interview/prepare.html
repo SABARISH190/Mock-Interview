@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Prepare for Interview{% endblock %}
+
+{% block head %}
+<style>
+    .prepare-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .prepare-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin-bottom: 2rem;
+    }
+    
+    .tip-card {
+        background: #f8f9fa;
+        border-left: 4px solid #4f46e5;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .countdown-timer {
+        font-size: 3rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .check-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .check-item .form-check-input {
+        margin-right: 1rem;
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    
+    .feature-list li {
+        margin-bottom: 0.75rem;
+    }
+    
+    .audio-test-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .audio-test-btn {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    
+    .audio-test-btn i {
+        font-size: 1.5rem;
+    }
+    
+    .audio-wave {
+        width: 100%;
+        height: 4rem;
+        margin-top: 1rem;
+        display: none;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Countdown timer
+        const countdownElement = document.getElementById('countdown');
+        if (countdownElement) {
+            const scheduledTime = new Date(countdownElement.dataset.scheduled).getTime();
+            
+            const updateCountdown = function() {
+                const now = new Date().getTime();
+                const distance = scheduledTime - now;
+                
+                if (distance < 0) {
+                    countdownElement.innerHTML = "Ready to Start!";
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const hours = Math.floor(distance / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                countdownElement.innerHTML = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            };
+            
+            // Update countdown immediately
+            updateCountdown();
+            
+            // Update countdown every second
+            const interval = setInterval(updateCountdown, 1000);
+        }
+        
+        // Microphone test
+        const micTestBtn = document.getElementById('mic-test-btn');
+        const micStatus = document.getElementById('mic-status');
+        const audioVisualizer = document.getElementById('audio-visualizer');
+        let audioContext;
+        let analyser;
+        let microphone;
+        let recording = false;
+        
+        micTestBtn.addEventListener('click', function() {
+            if (!recording) {
+                // Start recording
+                startMicTest();
+            } else {
+                // Stop recording
+                stopMicTest();
+            }
+        });
+        
+        function startMicTest() {
+            recording = true;
+            micTestBtn.innerHTML = '<i class="fas fa-stop"></i>';
+            micStatus.textContent = "Listening...";
+            audioVisualizer.style.display = 'block';
+            
+            // Initialize audio context
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            
+            // Get microphone access
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(function(stream) {
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    visualize();
+                })
+                .catch(function(err) {
+                    micStatus.textContent = "Error accessing microphone. Please check your permissions.";
+                    micTestBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    recording = false;
+                    console.error('Error accessing microphone:', err);
+                });
+        }
+        
+        function stopMicTest() {
+            recording = false;
+            micTestBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            micStatus.textContent = "Microphone test completed.";
+            
+            if (microphone) {
+                microphone.disconnect();
+                microphone = null;
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+        }
+        
+        function visualize() {
+            if (!analyser) return;
+            
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            const canvas = audioVisualizer;
+            const canvasCtx = canvas.getContext('2d');
+            
+            // Set canvas dimensions
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            
+            function draw() {
+                if (!recording) return;
+                
+                requestAnimationFrame(draw);
+                
+                analyser.getByteFrequencyData(dataArray);
+                
+                canvasCtx.fillStyle = 'rgb(248, 249, 250)';
+                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const barWidth = (canvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+                
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] / 2;
+                    
+                    canvasCtx.fillStyle = `rgb(79, 70, 229)`;
+                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    
+                    x += barWidth + 1;
+                }
+            }
+            
+            draw();
+        }
+    });
+</script>
+{% endblock %}

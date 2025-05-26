@@ -1,0 +1,308 @@
+Q1: What is the difference between a data analyst and a data scientist?
+A1: A data analyst focuses on interpreting data, creating reports, and visualizing insights using tools like SQL and Tableau. A data scientist builds predictive models and uses machine learning. I focus on actionable insights as an analyst.
+
+Q2: How do you write a SQL query to find the second-highest salary?
+A2: I use `SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees);` to find the second-highest salary. Alternatively, I can use `DENSE_RANK()` to rank salaries and select the second rank.
+
+Q3: What is the purpose of a pivot table in Excel?
+A3: A pivot table summarizes and analyzes data in Excel, allowing me to group, filter, and aggregate data (e.g., sum sales by region). I use it to quickly explore trends, like identifying top-performing products.
+
+Q4: How do you handle missing values in a dataset?
+A4: I handle missing values by imputing them with the mean/median for numerical data, mode for categorical data, or using interpolation for time-series. If the missingness is significant, I might drop rows or columns after assessing the impact.
+
+Q5: What is the difference between a bar chart and a histogram?
+A5: A bar chart displays categorical data with separate bars (e.g., sales by product), while a histogram shows the distribution of continuous data with adjacent bars (e.g., age distribution). I use bar charts for comparisons, histograms for distributions.
+
+Q6: How do you calculate the mean, median, and mode in Python?
+A6: In Python, I use `numpy.mean()` for the mean, `numpy.median()` for the median, and `statistics.mode()` for the mode. For example, `np.mean([1, 2, 3, 4])` returns 2.5, the average of the list.
+
+Q7: What is the purpose of the GROUP BY clause in SQL?
+A7: The GROUP BY clause groups rows with the same values in specified columns, allowing aggregation (e.g., `SELECT department, COUNT(*) FROM employees GROUP BY department`). I use it to summarize data, like counting employees per department.
+
+Q8: How do you create a scatter plot in Python?
+A8: I create a scatter plot using Matplotlib: `import matplotlib.pyplot as plt; plt.scatter(x, y); plt.xlabel('X-axis'); plt.ylabel('Y-axis'); plt.savefig('scatter.png')`. It’s useful for visualizing relationships between two variables.
+
+Q9: What is the difference between a left join and an inner join in SQL?
+A9: A left join returns all rows from the left table and matching rows from the right table, with NULLs for non-matches. An inner join returns only rows with matches in both tables. I use left join to keep all records from one table.
+
+Q10: How do you identify outliers in a dataset?
+A10: I identify outliers using the IQR method: calculate Q1, Q3, and IQR (Q3-Q1), then flag values below Q1-1.5*IQR or above Q3+1.5*IQR. I also use z-scores, flagging values with |z| > 3, indicating they’re far from the mean.
+
+Q11: What is the purpose of a box plot?
+A11: A box plot visualizes the distribution of data, showing the median, quartiles, and outliers. I use it to identify spread and skewness in data, like comparing salaries across departments, with whiskers indicating the range.
+
+Q12: How do you write a SQL query to calculate the average sales per month?
+A12: I use `SELECT MONTH(order_date) AS month, AVG(sales) AS avg_sales FROM orders GROUP BY MONTH(order_date);` to calculate average sales per month. I can also use `FORMAT(order_date, 'yyyy-MM')` for better formatting.
+
+Q13: What is the difference between correlation and causation?
+A13: Correlation measures the strength of a relationship between two variables (e.g., height and weight), while causation implies one variable directly affects another. I use correlation to identify patterns but avoid assuming causation without experiments.
+
+Q14: How do you create a line chart in Excel?
+A14: In Excel, I select the data, go to the Insert tab, and choose Line Chart. I customize it by adding axis titles and a legend. It’s useful for showing trends over time, like monthly sales data.
+
+Q15: What is the purpose of the VLOOKUP function in Excel?
+A15: VLOOKUP searches for a value in the first column of a range and returns a value in the same row from another column. I use it to match data, like `=VLOOKUP(employee_id, A2:B10, 2, FALSE)` to find an employee’s name.
+
+Q16: How do you calculate the standard deviation in Python?
+A16: I calculate the standard deviation using NumPy: `import numpy as np; std = np.std([1, 2, 3, 4])`. It measures the spread of data around the mean, with a higher value indicating more variability.
+
+Q17: What is the difference between a primary key and a foreign key in SQL?
+A17: A primary key uniquely identifies each row in a table (e.g., employee_id), while a foreign key links to a primary key in another table (e.g., department_id in an employees table). I use them to enforce relationships and integrity.
+
+Q18: How do you create a pie chart in Python?
+A18: I create a pie chart using Matplotlib: `import matplotlib.pyplot as plt; plt.pie(values, labels=labels, autopct='%1.1f%%'); plt.savefig('pie.png')`. It’s useful for showing proportions, like market share by product.
+
+Q19: What is the purpose of the WHERE clause in SQL?
+A19: The WHERE clause filters rows based on a condition, like `SELECT * FROM employees WHERE salary > 50000;`. I use it to narrow down results, ensuring only relevant data is returned for analysis.
+
+Q20: How do you handle duplicate rows in a dataset?
+A20: In Python, I use Pandas: `df.drop_duplicates()` to remove duplicate rows. In SQL, I use `SELECT DISTINCT` or group by all columns to eliminate duplicates. I verify duplicates are true duplicates before removing them.
+
+Q21: What is the difference between a measure and a dimension in data analysis?
+A21: A measure is a numerical value for aggregation (e.g., sales amount), while a dimension is a categorical attribute for grouping (e.g., region). I use measures for calculations and dimensions for slicing data in reports.
+
+Q22: How do you write a SQL query to join three tables?
+A22: I use `SELECT * FROM table1 t1 JOIN table2 t2 ON t1.id = t2.id JOIN table3 t3 ON t2.id = t3.id;` to join three tables. I ensure the join conditions correctly link the tables, like matching IDs across them.
+
+Q23: What is the purpose of a heat map in data visualization?
+A23: A heat map uses color to represent data intensity, showing patterns or correlations. I use it to visualize a correlation matrix in Python with Seaborn: `sns.heatmap(corr_matrix)`, highlighting strong relationships between variables.
+
+Q24: How do you calculate the percentage change between two values?
+A24: I calculate percentage change as `((new_value - old_value) / old_value) * 100`. For example, if sales increased from 100 to 120, it’s `((120-100)/100)*100 = 20%`. It’s useful for tracking growth or decline.
+
+Q25: What is the difference between a static and an interactive dashboard?
+A25: A static dashboard displays fixed data (e.g., a PDF report), while an interactive dashboard allows user interaction (e.g., filtering in Tableau). I use interactive dashboards for dynamic analysis, static for final reports.
+
+Q26: How do you write a SQL query to find duplicate records?
+A26: I use `SELECT column, COUNT(*) AS count FROM table GROUP BY column HAVING count > 1;` to find duplicates. For full rows, I group by all columns. It helps identify data quality issues in the dataset.
+
+Q27: What is the purpose of the COUNTIF function in Excel?
+A27: COUNTIF counts cells that meet a criterion, like `=COUNTIF(A2:A10, ">50")` to count values greater than 50. I use it to analyze data, such as counting how many sales exceeded a target.
+
+Q28: How do you create a funnel chart in Python?
+A28: I create a funnel chart using Plotly: `import plotly.express as px; fig = px.funnel(df, x='value', y='stage'); fig.write_image('funnel.png')`. It’s useful for visualizing stages, like a sales conversion funnel.
+
+Q29: What is the difference between a sample and a population in statistics?
+A29: A population includes all data points of interest (e.g., all customers), while a sample is a subset (e.g., 100 surveyed customers). I use samples to make inferences about the population when analyzing large datasets.
+
+Q30: How do you calculate the correlation between two variables in Python?
+A30: I calculate correlation using Pandas: `df['column1'].corr(df['column2'])`, which returns the Pearson correlation coefficient. A value close to 1 or -1 indicates a strong relationship, while 0 indicates no correlation.
+
+Q31: What is the purpose of the HAVING clause in SQL?
+A31: The HAVING clause filters grouped data, like `SELECT department, COUNT(*) FROM employees GROUP BY department HAVING COUNT(*) > 5;`. I use it to apply conditions after aggregation, unlike WHERE, which filters before.
+
+Q32: How do you create a bar chart in Python?
+A32: I create a bar chart using Matplotlib: `import matplotlib.pyplot as plt; plt.bar(categories, values); plt.xlabel('Categories'); plt.ylabel('Values'); plt.savefig('bar.png')`. It’s great for comparing categories, like sales by region.
+
+Q33: What is the difference between descriptive and inferential statistics?
+A33: Descriptive statistics summarize data (e.g., mean, median), while inferential statistics make predictions or test hypotheses (e.g., t-tests). I use descriptive stats for reporting, inferential for decision-making.
+
+Q34: How do you write a SQL query to calculate a running total?
+A34: I use a window function: `SELECT order_id, amount, SUM(amount) OVER (ORDER BY order_date) AS running_total FROM orders;`. It calculates a cumulative sum, useful for tracking sales over time.
+
+Q35: What is the purpose of a Pareto chart?
+A35: A Pareto chart combines a bar and line graph to show the relative importance of factors, following the 80/20 rule. I use it to identify key issues, like the top 20% of products driving 80% of sales.
+
+Q36: How do you calculate the z-score in Python?
+A36: I calculate the z-score using SciPy: `from scipy.stats import zscore; z = zscore(data)`. It measures how many standard deviations a value is from the mean, useful for identifying outliers.
+
+Q37: What is the difference between a clustered and a non-clustered index in SQL?
+A37: A clustered index determines the physical order of data in a table (one per table), while a non-clustered index is a separate structure with pointers to data. I use clustered for primary keys, non-clustered for frequent searches.
+
+Q38: How do you create a line plot in Python?
+A38: I create a line plot using Matplotlib: `import matplotlib.pyplot as plt; plt.plot(x, y); plt.xlabel('X'); plt.ylabel('Y'); plt.savefig('line.png')`. It’s ideal for showing trends, like stock prices over time.
+
+Q39: What is the purpose of the SUMIF function in Excel?
+A39: SUMIF adds values that meet a criterion, like `=SUMIF(A2:A10, ">100", B2:B10)` to sum values in B where A is greater than 100. I use it to aggregate data conditionally, like totaling sales above a threshold.
+
+Q40: How do you handle categorical data in a dataset?
+A40: I handle categorical data by encoding it—using one-hot encoding in Python (`pd.get_dummies()`) for nominal data or label encoding for ordinal data. In SQL, I use it directly in GROUP BY or JOIN operations.
+
+Q41: What is the difference between a time-series and a cross-sectional dataset?
+A41: A time-series dataset tracks data over time (e.g., daily sales), while a cross-sectional dataset captures data at a single point (e.g., sales by region on one day). I use time-series for trends, cross-sectional for comparisons.
+
+Q42: How do you write a SQL query to find the top 5 records by sales?
+A42: I use `SELECT * FROM orders ORDER BY sales DESC LIMIT 5;`. It sorts records by sales in descending order and returns the top 5, useful for identifying top performers.
+
+Q43: What is the purpose of a bubble chart?
+A43: A bubble chart visualizes three variables: x-axis, y-axis, and bubble size. I use it to show relationships with an additional dimension, like sales (x), profit (y), and volume (size) across products.
+
+Q44: How do you calculate the moving average in Python?
+A44: I calculate the moving average using Pandas: `df['moving_avg'] = df['value'].rolling(window=3).mean()`. It smooths data over a window of 3 periods, useful for identifying trends in time-series data.
+
+Q45: What is the difference between a fact table and a dimension table in a data warehouse?
+A45: A fact table stores quantitative data (e.g., sales amounts) with foreign keys to dimension tables, which store descriptive attributes (e.g., product details). I use them in star schemas for efficient querying.
+
+Q46: How do you write a SQL query to calculate the year-over-year growth?
+A46: I use `SELECT year, sales, (sales - LAG(sales) OVER (ORDER BY year)) / LAG(sales) OVER (ORDER BY year) * 100 AS yoy_growth FROM sales_data;`. It compares each year’s sales with the previous year to calculate growth.
+
+Q47: What is the purpose of the CONCATENATE function in Excel?
+A47: CONCATENATE combines text from multiple cells, like `=CONCATENATE(A2, " ", B2)` to join a first and last name. I use it to format data, such as creating full names or addresses.
+
+Q48: How do you create a histogram in Python?
+A48: I create a histogram using Matplotlib: `import matplotlib.pyplot as plt; plt.hist(data, bins=10); plt.xlabel('Value'); plt.ylabel('Frequency'); plt.savefig('hist.png')`. It shows the distribution of a variable.
+
+Q49: What is the difference between a median and a mean?
+A49: The mean is the average of all values, sensitive to outliers, while the median is the middle value when sorted, more robust. I use the median for skewed data, like income, and the mean for symmetric data.
+
+Q50: How do you calculate the interquartile range (IQR) in Python?
+A50: I calculate the IQR using NumPy: `iqr = np.percentile(data, 75) - np.percentile(data, 25)`. It measures the spread of the middle 50% of data, useful for identifying outliers.
+
+Q51: What is the purpose of the ORDER BY clause in SQL?
+A51: The ORDER BY clause sorts query results, like `SELECT * FROM employees ORDER BY salary DESC;`. I use it to organize data, such as ranking employees by salary in descending order.
+
+Q52: How do you create a stacked bar chart in Python?
+A52: I create a stacked bar chart using Matplotlib: `plt.bar(x, y1); plt.bar(x, y2, bottom=y1); plt.savefig('stacked.png')`. It’s useful for showing contributions, like sales by product across regions.
+
+Q53: What is the difference between a discrete and a continuous variable?
+A53: A discrete variable has distinct values (e.g., number of items sold), while a continuous variable can take any value in a range (e.g., temperature). I choose visualization and analysis methods based on the variable type.
+
+Q54: How do you write a SQL query to calculate a cumulative sum?
+A54: I use `SELECT id, amount, SUM(amount) OVER (ORDER BY id) AS cumulative_sum FROM transactions;`. It calculates a running total, useful for tracking balances or sales over time.
+
+Q55: What is the purpose of a waterfall chart?
+A55: a's useful for visualizing contributions, like sales by product across regions.
+
+Q53: What is the difference between a discrete and a continuous variable?
+A53: A discrete variable has distinct values (e.g., number of items sold), while a continuous variable can take any value in a range (e.g., temperature). I choose visualization and analysis methods based on the variable type.
+
+Q54: How do you write a SQL query to calculate a cumulative sum?
+A54: I use `SELECT id, amount, SUM(amount) OVER (ORDER BY id) AS cumulative_sum FROM transactions;`. It calculates a running total, useful for tracking balances or sales over time.
+
+Q55: What is the purpose of a waterfall chart?
+A55: A waterfall chart shows how an initial value is affected by a series of positive or negative changes. I use it to break down financial performance, like showing how revenue leads to profit after expenses.
+
+Q56: How do you calculate the coefficient of variation in Python?
+A56: I calculate the coefficient of variation as `cv = (np.std(data) / np.mean(data)) * 100`. It measures relative variability, useful for comparing the spread of datasets with different units or scales.
+
+Q57: What is the difference between a star schema and a snowflake schema?
+A57: A star schema has a central fact table connected to denormalized dimension tables, simpler for querying. A snowflake schema normalizes dimensions into multiple related tables, more complex but space-efficient. I use star schemas for faster queries.
+
+Q58: How do you create a box plot in Python?
+A58: I create a box plot using Seaborn: `import seaborn as sns; sns.boxplot(x='category', y='value', data=df); plt.savefig('box.png')`. It’s great for comparing distributions across categories, like sales by region.
+
+Q59: What is the purpose of the IF function in Excel?
+A59: The IF function evaluates a condition and returns one value if true, another if false, like `=IF(A2>100, "High", "Low")`. I use it to categorize data, such as labeling sales as high or low.
+
+Q60: How do you handle time-series data in Excel?
+A60: I handle time-series data in Excel by ensuring dates are in a consistent format, sorting them chronologically, and using line charts to visualize trends. I also use functions like AVERAGEIFS to calculate metrics over specific periods.
+
+Q61: What is the difference between a union and a join in SQL?
+A61: A UNION combines rows from two tables with the same structure, stacking them vertically (e.g., `SELECT * FROM table1 UNION SELECT * FROM table2`). A JOIN combines columns based on a condition. I use UNION to merge similar datasets.
+
+Q62: How do you create a scatter plot with a trendline in Python?
+A62: I create a scatter plot with a trendline using Seaborn: `import seaborn as sns; sns.scatterplot(x='x', y='y', data=df); sns.regplot(x='x', y='y', data=df, scatter=False); plt.savefig('scatter_trend.png')`. It shows relationships and trends.
+
+Q63: What is the purpose of the chi-square test in statistics?
+A63: The chi-square test assesses the independence of two categorical variables, like testing if product preference depends on region. I use it to determine if observed frequencies differ significantly from expected frequencies.
+
+Q64: How do you write a SQL query to rank records?
+A64: I use `SELECT name, score, RANK() OVER (ORDER BY score DESC) AS rank FROM students;`. It assigns ranks based on the score, with ties receiving the same rank, useful for leaderboards or performance analysis.
+
+Q65: What is the difference between a dashboard and a report?
+A65: A dashboard provides a real-time, visual overview of key metrics (e.g., in Tableau), often interactive. A report is a detailed, static document with in-depth analysis (e.g., in PDF). I use dashboards for monitoring, reports for deep insights.
+
+Q66: How do you calculate the percentile in Python?
+A66: I calculate the percentile using NumPy: `percentile_75 = np.percentile(data, 75)`. It returns the value below which 75% of the data falls, useful for understanding data distribution, like income levels.
+
+Q67: What is the purpose of the DISTINCT keyword in SQL?
+A67: The DISTINCT keyword removes duplicate rows from a result set, like `SELECT DISTINCT department FROM employees;`. I use it to get unique values, such as listing all departments without repetition.
+
+Q68: How do you create a violin plot in Python?
+A68: I create a violin plot using Seaborn: `import seaborn as sns; sns.violinplot(x='category', y='value', data=df); plt.savefig('violin.png')`. It shows the distribution and density of data across categories, like sales by region.
+
+Q69: What is the difference between a t-test and an ANOVA test?
+A69: A t-test compares the means of two groups (e.g., sales in two regions), while ANOVA compares means across three or more groups (e.g., sales across multiple regions). I use ANOVA to avoid multiple t-tests and control for error.
+
+Q70: How do you handle outliers in Excel?
+A70: In Excel, I identify outliers using conditional formatting (e.g., highlighting values beyond Q1-1.5*IQR) or filtering with formulas. I then decide to exclude or cap them based on the analysis, ensuring they don’t skew results.
+
+Q71: What is the purpose of the CASE statement in SQL?
+A71: The CASE statement adds conditional logic, like `SELECT name, CASE WHEN salary > 50000 THEN 'High' ELSE 'Low' END AS salary_level FROM employees;`. I use it to categorize data, such as labeling salary levels.
+
+Q72: How do you create a pair plot in Python?
+A72: I create a pair plot using Seaborn: `import seaborn as sns; sns.pairplot(df); plt.savefig('pairplot.png')`. It shows pairwise relationships and distributions for multiple variables, useful for exploratory data analysis.
+
+Q73: What is the difference between a parameter and a statistic?
+A73: A parameter describes a population (e.g., population mean), while a statistic describes a sample (e.g., sample mean). I use statistics to estimate parameters when analyzing data, like estimating average customer spend.
+
+Q74: How do you write a SQL query to calculate a weighted average?
+A74: I use `SELECT SUM(value * weight) / SUM(weight) AS weighted_avg FROM data;`. It calculates a weighted average, like a student’s grade point average, considering the weight of each score.
+
+Q75: What is the purpose of a Sankey diagram?
+A75: A Sankey diagram visualizes the flow of data between categories, like showing how customers move through a sales funnel. I use it to highlight transitions, such as from lead to purchase, with varying widths for magnitude.
+
+Q76: How do you calculate the skewness of a dataset in Python?
+A76: I calculate skewness using SciPy: `from scipy.stats import skew; skewness = skew(data)`. A positive value indicates a right skew, negative a left skew, and zero symmetry, helping me understand data distribution.
+
+Q77: What is the difference between a view and a table in SQL?
+A77: A table stores data physically, while a view is a virtual table created by a query (e.g., `CREATE VIEW view_name AS SELECT * FROM table;`). I use views to simplify queries and restrict access to specific data.
+
+Q78: How do you create a heatmap in Python?
+A78: I create a heatmap using Seaborn: `import seaborn as sns; sns.heatmap(df.corr(), annot=True); plt.savefig('heatmap.png')`. It’s useful for visualizing correlations, with colors indicating the strength of relationships.
+
+Q79: What is the purpose of the INDEX-MATCH function in Excel?
+A79: INDEX-MATCH retrieves a value from a range based on a lookup, like `=INDEX(B2:B10, MATCH(lookup_value, A2:A10, 0))`. It’s more flexible than VLOOKUP, allowing lookups in any column, useful for dynamic data retrieval.
+
+Q80: How do you handle data inconsistencies in a dataset?
+A80: I handle inconsistencies by standardizing formats (e.g., dates as YYYY-MM-DD), correcting typos with find-and-replace, and using validation rules to flag errors. I also document changes to ensure traceability.
+
+Q81: What is the difference between a one-tailed and a two-tailed test?
+A81: A one-tailed test checks for a difference in one direction (e.g., sales > 100), while a two-tailed test checks both directions (e.g., sales ≠ 100). I use one-tailed for directional hypotheses, two-tailed for general comparisons.
+
+Q82: How do you write a SQL query to calculate the median?
+A82: I calculate the median in SQL using `PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY value) AS median FROM table;`. For databases without this function, I sort and select the middle value(s), averaging if there are two.
+
+Q83: What is the purpose of a treemap in data visualization?
+A83: A treemap displays hierarchical data as nested rectangles, with sizes proportional to values. I use it to show contributions, like sales by category and subcategory, with colors for different groups.
+
+Q84: How do you calculate the mode in Python?
+A84: I calculate the mode using the `statistics` module: `from statistics import mode; mode_value = mode(data)`. It returns the most frequent value, useful for categorical data analysis, like finding the most common product sold.
+
+Q85: What is the difference between a clustered bar chart and a stacked bar chart?
+A85: A clustered bar chart groups bars side by side for comparison (e.g., sales by region per year), while a stacked bar chart stacks bars to show totals (e.g., sales by product within a region). I use clustered for comparisons, stacked for composition.
+
+Q86: How do you write a SQL query to find the most recent record?
+A86: I use `SELECT * FROM table ORDER BY date_column DESC LIMIT 1;`. It sorts records by date in descending order and returns the most recent one, useful for tracking the latest transaction.
+
+Q87: What is the purpose of the ROUND function in Excel?
+A87: The ROUND function rounds a number to a specified number of digits, like `=ROUND(3.14159, 2)` to get 3.14. I use it to simplify numbers in reports, ensuring readability and consistency.
+
+Q88: How do you create a swarm plot in Python?
+A88: I create a swarm plot using Seaborn: `import seaborn as sns; sns.swarmplot(x='category', y='value', data=df); plt.savefig('swarm.png')`. It shows individual data points, useful for visualizing distributions without overlap.
+
+Q89: What is the difference between a population standard deviation and a sample standard deviation?
+A89: Population standard deviation uses the entire dataset (N), while sample standard deviation uses a subset (n-1) to correct for bias. I use sample standard deviation when working with a sample to estimate population variability.
+
+Q90: How do you handle seasonality in time-series data?
+A90: I handle seasonality by identifying patterns (e.g., monthly sales spikes), using seasonal decomposition in Python (`statsmodels.tsa.seasonal_decompose`), and adjusting forecasts with seasonal indices to account for recurring trends.
+
+Q91: What is the purpose of the WITH clause in SQL?
+A91: The WITH clause (Common Table Expression) creates a temporary result set, like `WITH temp AS (SELECT * FROM table) SELECT * FROM temp;`. I use it to simplify complex queries and improve readability.
+
+Q92: How do you create a donut chart in Python?
+A92: I create a donut chart using Matplotlib: `plt.pie(values, labels=labels); plt.gca().add_artist(plt.Circle((0,0), 0.7, color='white')); plt.savefig('donut.png')`. It’s a pie chart with a hollow center, useful for proportions.
+
+Q93: What is the difference between a hypothesis test and a confidence interval?
+A93: A hypothesis test evaluates a claim (e.g., is the mean 100?) with a p-value, while a confidence interval estimates a range for a parameter (e.g., mean is between 95-105). I use both for statistical inference.
+
+Q94: How do you write a SQL query to calculate the percentage of total?
+A94: I use `SELECT category, (sales / SUM(sales) OVER ()) * 100 AS percentage FROM sales_data;`. It calculates each category’s sales as a percentage of the total, useful for market share analysis.
+
+Q95: What is the purpose of a radar chart?
+A95: A radar chart compares multiple variables across categories, with each axis representing a variable. I use it to compare performance, like evaluating a product across metrics like price, quality, and durability.
+
+Q96: How do you calculate the kurtosis of a dataset in Python?
+A96: I calculate kurtosis using SciPy: `from scipy.stats import kurtosis; kurt = kurtosis(data)`. It measures the “tailedness” of the distribution, with high kurtosis indicating more outliers.
+
+Q97: What is the difference between a materialized view and a regular view in SQL?
+A97: A regular view is a virtual table updated with each query, while a materialized view stores the result physically, updated periodically. I use materialized views for performance in large datasets, regular views for simplicity.
+
+Q98: How do you create a strip plot in Python?
+A98: I create a strip plot using Seaborn: `import seaborn as sns; sns.stripplot(x='category', y='value', data=df); plt.savefig('strip.png')`. It shows individual data points, useful for small datasets to avoid overlap.
+
+Q99: What is the purpose of the binomial distribution in statistics?
+A99: The binomial distribution models the number of successes in a fixed number of independent trials, like flipping a coin 10 times. I use it to calculate probabilities, such as the chance of 7 heads in 10 flips.
+
+Q100: How do you handle data quality issues in a dataset?
+A100: I handle data quality by checking for inconsistencies (e.g., mismatched formats), validating against rules (e.g., age > 0), and correcting errors with transformations. I also document issues and communicate with stakeholders for resolution.

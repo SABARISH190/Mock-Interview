@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your {{ interview.domain }} Interview Analysis is Ready</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .score-card {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .score-label {
+            font-weight: bold;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .improvement {
+            color: #27ae60;
+            font-style: italic;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Your {{ interview.domain }} Interview Analysis is Ready!</h1>
+    </div>
+    
+    <div class="content">
+        <p>Hello {{ user.first_name }},</p>
+        <p>We've completed the analysis of your recent mock interview for <strong>{{ interview.domain }}</strong>. Here's a summary of your performance:</p>
+        
+        <div class="score-card">
+            <h3>Performance Overview</h3>
+            <div class="score-row">
+                <span class="score-label">Overall Score:</span>
+                <span class="score-value">{{ '%.1f'|format(analysis.overall_score) }}/100</span>
+            </div>
+            <div class="score-row">
+                <span class="score-label">Technical Knowledge:</span>
+                <span class="score-value">{{ '%.1f'|format(analysis.technical_score) }}/100</span>
+            </div>
+            <div class="score-row">
+                <span class="score-label">Communication:</span>
+                <span class="score-value">{{ '%.1f'|format(analysis.communication_score) }}/100</span>
+            </div>
+            <div class="score-row">
+                <span class="score-label">Problem Solving:</span>
+                <span class="score-value">{{ '%.1f'|format(analysis.problem_solving_score) }}/100</span>
+            </div>
+            {% if analysis.improvement_since_last %}
+            <div class="score-row improvement">
+                <span>Improvement since last attempt:</span>
+                <span>+{{ '%.1f'|format(analysis.improvement_since_last) }}%</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <h3>Key Strengths</h3>
+        <ul>
+            {% for strength in analysis.strengths %}
+            <li>{{ strength }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Areas for Improvement</h3>
+        <ul>
+            {% for weakness in analysis.weaknesses %}
+            <li>{{ weakness }}</li>
+            {% endfor %}
+        </ul>
+        
+        <p>A detailed analysis report is attached to this email for your reference.</p>
+        
+        <p style="text-align: center;">
+            <a href="{{ url_for('interview.view_analysis', interview_id=interview.id, _external=True) }}" class="button">View Full Analysis</a>
+        </p>
+        
+        <p>Keep up the good work! Consider scheduling another mock interview to continue improving your skills.</p>
+        
+        <p>Best regards,<br>The Mock Interview Team</p>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; {{ now.year }} Mock Interview Platform. All rights reserved.</p>
+        <p>This is an automated message, please do not reply to this email.</p>
+    </div>
+</body>
+</html>

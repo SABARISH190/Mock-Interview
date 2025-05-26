@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Mock Interview Platform</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .feature {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to Mock Interview Platform!</h1>
+    </div>
+    
+    <div class="content">
+        <p>Hello {{ user.first_name }},</p>
+        <p>Thank you for joining Mock Interview Platform! We're excited to help you prepare for your next job interview with our AI-powered mock interviews.</p>
+        
+        <div class="feature">
+            <h3>Get Started</h3>
+            <p>Start by scheduling your first mock interview. Choose from different domains and difficulty levels to get the most relevant practice.</p>
+            <p style="text-align: center;">
+                <a href="{{ url_for('main.dashboard', _external=True) }}" class="button">Go to Dashboard</a>
+            </p>
+        </div>
+        
+        <h3>How It Works</h3>
+        <ol>
+            <li><strong>Select a Domain</strong> - Choose from Full Stack Developer, AI Engineer, or Data Analyst tracks</li>
+            <li><strong>Upload Your Resume</strong> - Get personalized interview questions based on your experience</li>
+            <li><strong>Practice with AI</strong> - Experience realistic interview scenarios with our AI interviewer</li>
+            <li><strong>Get Feedback</strong> - Receive detailed analysis and suggestions for improvement</li>
+        </ol>
+        
+        <p>If you have any questions or need assistance, feel free to reach out to our support team.</p>
+        
+        <p>Happy interviewing!<br>The Mock Interview Team</p>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; {{ now.year }} Mock Interview Platform. All rights reserved.</p>
+        <p>This is an automated message, please do not reply to this email.</p>
+    </div>
+</body>
+</html>

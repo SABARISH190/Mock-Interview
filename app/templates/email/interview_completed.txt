@@ -1,0 +1,39 @@
+Your {{ interview.domain }} Interview Analysis is Ready!
+
+Hello {{ user.first_name }},
+
+We've completed the analysis of your recent mock interview for {{ interview.domain }}. Here's a summary of your performance:
+
+PERFORMANCE OVERVIEW
+-------------------
+Overall Score: {{ '%.1f'|format(analysis.overall_score) }}/100
+Technical Knowledge: {{ '%.1f'|format(analysis.technical_score) }}/100
+Communication: {{ '%.1f'|format(analysis.communication_score) }}/100
+Problem Solving: {{ '%.1f'|format(analysis.problem_solving_score) }}/100
+{% if analysis.improvement_since_last %}
+Improvement since last attempt: +{{ '%.1f'|format(analysis.improvement_since_last) }}%
+{% endif %}
+
+KEY STRENGTHS
+------------
+{% for strength in analysis.strengths %}- {{ strength }}
+{% endfor %}
+
+AREAS FOR IMPROVEMENT
+--------------------
+{% for weakness in analysis.weaknesses %}- {{ weakness }}
+{% endfor %}
+
+A detailed analysis report is attached to this email for your reference.
+
+View your full analysis here:
+{{ url_for('interview.view_analysis', interview_id=interview.id, _external=True) }}
+
+Keep up the good work! Consider scheduling another mock interview to continue improving your skills.
+
+Best regards,
+The Interview Simulator AI Team
+
+--
+Interview Simulator AI
+This is an automated message, please do not reply to this email.

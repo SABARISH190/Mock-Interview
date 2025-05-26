@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Session - {{ interview.title }}{% endblock %}
+
+
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get questions from the template variable
+        const questionsData = JSON.parse('{{ questions_json|tojson|safe }}');
+        console.log('Questions data:', questionsData);
+        
+        // Initialize variables
+        let currentQuestion = 0;
+        const answers = questionsData.map(() => '');
+        
+        // Get DOM elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const questionContainer = document.getElementById('question-container');
+        const completionScreen = document.getElementById('completion-screen');
+        const questionText = document.getElementById('question-text');
+        const answerInput = document.getElementById('answer');
+        const prevButton = document.getElementById('prev-question');
+        const nextButton = document.getElementById('next-question');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        
+        // Start interview button
+        const startButton = document.getElementById('start-interview');
+        if (startButton) {
+            startButton.addEventListener('click', function() {
+                if (welcomeScreen) welcomeScreen.classList.add('d-none');
+                if (questionContainer) questionContainer.classList.remove('d-none');
+                showQuestion(0);
+            });
+        }
+        
+        // Navigation buttons
+        if (prevButton) {
+            prevButton.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    saveAnswer();
+                    showQuestion(currentQuestion - 1);
+                }
+            });
+        }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', function() {
+                saveAnswer();
+                
+                if (currentQuestion < questionsData.length - 1) {
+                    showQuestion(currentQuestion + 1);
+                } else {
+                    // Submit all answers
+                    submitInterview();
+                }
+            });
+        }
+        
+        function showQuestion(index) {
+            if (index < 0 || index >= questionsData.length) {
+                console.error('Question index out of bounds:', index);
+                return;
+            }
+            
+            currentQuestion = index;
+            const question = questionsData[index];
+            
+            if (!question) {
+                console.error('No question found at index', index);
+                if (questionText) questionText.textContent = 'Question not available';
+                return;
+            }
+            
+            // Update UI
+            if (questionText) questionText.textContent = question.question_text || 'Question not available';
+            if (answerInput) answerInput.value = answers[index] || '';
+            
+            // Update navigation buttons
+            if (prevButton) prevButton.disabled = index === 0;
+            if (nextButton) {
+                nextButton.textContent = index === questionsData.length - 1 ? 'Submit Interview' : 'Next Question';
+            }
+            
+            // Update progress
+            if (progressBar && progressText) {
+                const progress = ((index + 1) / questionsData.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `Question ${index + 1} of ${questionsData.length}`;
+            }
+        }
+        
+        function saveAnswer() {
+            if (!answerInput || currentQuestion < 0 || currentQuestion >= answers.length) return;
+            
+            answers[currentQuestion] = answerInput.value;
+            
+            // Save answer to server if we have a question ID
+            const question = questionsData[currentQuestion];
+            if (question && question.id) {
+                // Get CSRF token from meta tag
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = csrfMeta ? csrfMeta.content : '';
+                
+                fetch(`/interview/{{ interview.id }}/question/${question.id}/response`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        response: answerInput.value,
+                        csrf_token: csrfToken
+                    })
+                })
+                .then(response => {
+                    console.log('Raw response:', response);
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            console.error('Error response:', err);
+                            throw new Error(err.error || `Failed to save response (${response.status} ${response.statusText})`);
+                        }).catch(jsonError => {
+                            console.error('Error parsing error response:', jsonError);
+                            throw new Error(`Failed to save response (${response.status} ${response.statusText})`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response saved successfully:', data);
+                    // Show success message
+                    const toast = document.getElementById('saveToast');
+                    const toastBody = toast.querySelector('.toast-body');
+                    toastBody.textContent = 'Response saved successfully';
+                    const toastInstance = new bootstrap.Toast(toast);
+                    toastInstance.show();
+                })
+                .catch(error => {
+                    console.error('Error saving answer:', error);
+                    console.error('Error stack:', error.stack);
+                    
+                    // Show error message in a toast
+                    const toast = document.getElementById('errorToast');
+                    const toastBody = toast.querySelector('.toast-body');
+                    toastBody.textContent = `Error: ${error.message}`;
+                    const toastInstance = new bootstrap.Toast(toast);
+                    toastInstance.show();
+                    
+                    // Also log to console for debugging
+                    console.error('Full error object:', error);
+                });
+            }
+        }
+        
+        function submitInterview() {
+            // First save the current answer
+            saveAnswer();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submit-interview');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+            }
+            
+            // Get CSRF token from cookies
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const csrfToken = getCookie('X-CSRFToken');
+            
+            // Mark interview as complete
+            fetch(`{{ url_for('interview.complete_interview', interview_id=interview.id) }}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // Add CSRF token for security
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error || 'Network response was not ok'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.redirect_url) {
+                    // Redirect to the view page
+                    window.location.href = data.redirect_url;
+                } else {
+                    throw new Error(data.error || 'There was an error submitting your interview.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message || 'An error occurred while submitting your interview. Please try again.');
+                // Reset button state
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Submit Interview';
+                }
+            });
+        }
+        
+        // Initialize the interview
+        if (questionsData.length > 0) {
+            // If there are questions, show the welcome screen
+            if (welcomeScreen) welcomeScreen.classList.remove('d-none');
+        } else {
+            // If no questions, show error
+            console.error('No questions available for this interview');
+            if (welcomeScreen) {
+                welcomeScreen.innerHTML = '<div class="alert alert-danger">' +
+                    '<h4>No Questions Available</h4>' +
+                    '<p>This interview doesn\'t have any questions yet. Please try again later or contact support.</p>' +
+                    '<a href="/dashboard" class="btn btn-primary">Return to Dashboard</a>' +
+                    '</div>';
+            }
+        }
+    });
+</script>
+{% endblock %}

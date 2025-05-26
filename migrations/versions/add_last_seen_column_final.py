@@ -1,0 +1,35 @@
+"""Add last_seen to User
+
+Revision ID: 1a2b3c4d5e6f
+Revises: 64d6a1bcceb6
+Create Date: 2024-03-21 12:00:00.000000
+
+"""
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy.sql import func
+
+# revision identifiers, used by Alembic.
+revision = '1a2b3c4d5e6f'
+down_revision = '64d6a1bcceb6'
+branch_labels = None
+depends_on = None
+
+def upgrade():
+    # Add last_seen column with a default value
+    op.add_column('users', sa.Column('last_seen', sa.DateTime(), nullable=True))
+    
+    # Set a default value for existing rows
+    op.execute("UPDATE users SET last_seen = datetime('now')")
+    
+    # Now alter the column to be non-nullable with a default
+    with op.batch_alter_table('users') as batch_op:
+        batch_op.alter_column('last_seen',
+                           existing_type=sa.DateTime(),
+                           nullable=False,
+                           server_default=func.now())
+
+def downgrade():
+    # Drop the last_seen column
+    with op.batch_alter_table('users') as batch_op:
+        batch_op.drop_column('last_seen')

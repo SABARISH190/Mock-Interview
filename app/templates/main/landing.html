@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Simulator AI{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero bg-gradient-primary text-white py-5 position-relative">
+    <!-- Login/Signup Buttons -->
+    <div class="position-absolute top-0 end-0 mt-3 me-4">
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm login-btn" style="opacity: 0.6;">
+                <i class="fas fa-sign-in-alt me-1"></i> Login
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm shadow-sm" style="background-color: #4f46e5; border-color: #4f46e5;">
+                <i class="fas fa-user-plus me-1"></i> Sign Up
+            </a>
+        </div>
+    </div>
+    <style>
+        .login-btn:hover {
+            opacity: 1 !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .btn-primary {
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-3" style="color: black;">Prepare for Your Dream Job with Interview Simulator AI</h1>
+                <p class="lead mb-4" style="color: black;">Practice technical interviews with our advanced AI interviewer that adapts to your resume and provides personalized feedback to help you improve your skills.</p>
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 me-md-2">Get Started</a>
+                    <a href="#how-it-works" class="btn btn-light btn-lg px-4">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                <div class="text-center" style="max-width: 90%;">
+                    <img src="{{ url_for('static', filename='images/image.png') }}" 
+                         class="img-fluid rounded-3 shadow" 
+                         alt="AI Interview Illustration"
+                         style="max-height: 400px; width: auto; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">Why Choose Our Platform?</h2>
+                <p class="lead text-muted">We provide the most realistic interview experience powered by AI</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle p-3 bg-primary-light d-inline-block mb-3">
+                            <i class="fas fa-robot fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">AI-Powered Interviews</h5>
+                        <p class="card-text">Our intelligent AI interviewer adapts to your experience and skill level to create a realistic interview experience.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle p-3 bg-success-light d-inline-block mb-3">
+                            <i class="fas fa-file-alt fa-2x text-success"></i>
+                        </div>
+                        <h5 class="card-title">Resume Analysis</h5>
+                        <p class="card-text">Upload your resume to get tailored interview questions based on your experience and skills.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle p-3 bg-info-light d-inline-block mb-3">
+                            <i class="fas fa-chart-line fa-2x text-info"></i>
+                        </div>
+                        <h5 class="card-title">Detailed Feedback</h5>
+                        <p class="card-text">Receive comprehensive analysis of your performance with actionable insights for improvement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="py-5" id="how-it-works">
+    <div class="container py-4">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">How It Works</h2>
+                <p class="lead text-muted">Four simple steps to improve your interview skills</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="text-center">
+                    <div class="position-relative mb-4">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 60px; height: 60px;">
+                            <span class="fw-bold">1</span>
+                        </div>
+                        <div class="process-line"></div>
+                    </div>
+                    <h5>Register</h5>
+                    <p class="text-muted">Create an account and set up your profile</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="text-center">
+                    <div class="position-relative mb-4">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 60px; height: 60px;">
+                            <span class="fw-bold">2</span>
+                        </div>
+                        <div class="process-line"></div>
+                    </div>
+                    <h5>Upload Resume</h5>
+                    <p class="text-muted">Share your resume for personalized questions</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="text-center">
+                    <div class="position-relative mb-4">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 60px; height: 60px;">
+                            <span class="fw-bold">3</span>
+                        </div>
+                        <div class="process-line"></div>
+                    </div>
+                    <h5>Practice Interview</h5>
+                    <p class="text-muted">Go through a realistic interview simulation</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="position-relative mb-4">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 60px; height: 60px;">
+                            <span class="fw-bold">4</span>
+                        </div>
+                    </div>
+                    <h5>Get Feedback</h5>
+                    <p class="text-muted">Receive detailed analysis and improve</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Domains Section -->
+<div class="py-5">
+    <div class="container py-4">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-12 col-md-10 col-lg-8">
+                <h2 class="fw-bold mb-3">Explore Interview Domains</h2>
+                <p class="lead text-muted mb-5">Practice interviews tailored to your career path</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <!-- Full Stack Development -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                    <div class="position-relative" style="height: 200px; overflow: hidden; background-color: #f8f9fa;">
+                        <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                            <img src="{{ url_for('static', filename='images/full-stack.jpg') }}" 
+                                 class="img-fluid" 
+                                 style="max-height: 100%; max-width: 100%; object-fit: contain;"
+                                 alt="Full Stack Development">
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">Full Stack Development</h4>
+                        <p class="card-text text-muted mb-4">Master both front-end and back-end development with our comprehensive interview preparation. Cover topics from React and Node.js to databases and system design.</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">
+                            Try Now <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI/ML Engineering -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                    <div class="position-relative" style="height: 200px; overflow: hidden; background-color: #f8f9fa;">
+                        <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                            <img src="{{ url_for('static', filename='images/ai-ml.jpg') }}" 
+                                 class="img-fluid" 
+                                 style="max-height: 100%; max-width: 100%; object-fit: contain;"
+                                 alt="AI/ML Engineering">
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">AI/ML Engineering</h4>
+                        <p class="card-text text-muted mb-4">Ace your AI/ML interviews with our specialized preparation. Practice ML system design, algorithms, and data science concepts with real-world scenarios.</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">
+                            Try Now <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data Science -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                    <div class="position-relative" style="height: 200px; overflow: hidden; background-color: #f8f9fa;">
+                        <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                            <img src="{{ url_for('static', filename='images/data-science.jpg') }}" 
+                                 class="img-fluid" 
+                                 style="max-height: 100%; max-width: 100%; object-fit: contain;"
+                                 alt="Data Science">
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">Data Science</h4>
+                        <p class="card-text text-muted mb-4">Excel in data science interviews with our targeted preparation. Cover statistics, machine learning, data wrangling, and case study analysis.</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">
+                            Try Now <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">What Our Users Say</h2>
+                <p class="lead text-muted">Success stories from candidates who aced their interviews</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="100" height="100" fill="#4e73df"/>
+                                    <path d="M50 30c5.5 0 10-4.5 10-10s-4.5-10-10-10-10 4.5-10 10 4.5 10 10 10zm0 10c-11 0-30 5.5-30 16.7v13.3h60V56.7C80 45.5 61 40 50 40z" fill="#f8f9fc"/>
+                                </svg>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="mb-0">Sarah Johnson</h6>
+                                <small class="text-muted">Software Engineer at TechCorp</small>
+                            </div>
+                        </div>
+                        <p class="card-text">"The AI interviewer was incredibly realistic and helped me identify areas I needed to improve. I landed my dream job after just three practice sessions!"</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="100" height="100" fill="#1cc88a"/>
+                                    <path d="M50 30c-5.5 0-10-4.5-10-10s4.5-10 10-10 10 4.5 10 10-4.5 10-10 10zm0 10c11 0 30 5.5 30 16.7v13.3H20V56.7C20 45.5 39 40 50 40z" fill="#e6f7f1"/>
+                                    <circle cx="50" cy="25" r="5" fill="#e6f7f1"/>
+                                </svg>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="mb-0">Michael Chen</h6>
+                                <small class="text-muted">Data Scientist at DataInsights</small>
+                            </div>
+                        </div>
+                        <p class="card-text">"The personalized feedback on my technical answers was spot on. It helped me refine my communication and technical explanations significantly."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="100" height="100" fill="#f6c23e"/>
+                                    <path d="M50 25c6.9 0 12.5 5.6 12.5 12.5S56.9 50 50 50s-12.5-5.6-12.5-12.5S43.1 25 50 25zm0 30c11 0 20 5.1 20 11.3V80H30V66.3C30 60.1 39 55 50 55z" fill="#fdf6e3"/>
+                                    <circle cx="50" cy="37.5" r="7.5" fill="#fdf6e3"/>
+                                </svg>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="mb-0">Emma Williams</h6>
+                                <small class="text-muted">Product Manager at InnovateX</small>
+                            </div>
+                        </div>
+                        <p class="card-text">"The behavioral questions were tailored to my experience level and the feedback helped me structure my answers more effectively."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-5 bg-primary text-white">
+    <div class="container py-4 text-center">
+        <h2 class="fw-bold mb-4">Ready to Ace Your Next Interview?</h2>
+        <p class="lead mb-4">Join thousands of successful candidates who landed their dream jobs with our help</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-5">Start Free Trial</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+// Initialize Bootstrap tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
+// FAQ Accordion functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const accordionButtons = document.querySelectorAll('.accordion-button');
+    
+    accordionButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('data-bs-target');
+            const targetElement = document.querySelector(targetId);
+            
+            if (!targetElement) return;
+            
+            // Toggle the clicked item
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            
+            // Close all other accordion items
+            document.querySelectorAll('.accordion-collapse').forEach(collapse => {
+                if (collapse !== targetElement) {
+                    collapse.classList.remove('show');
+                    const btn = document.querySelector(`[data-bs-target="#${collapse.id}"]`);
+                    if (btn) {
+                        btn.classList.add('collapsed');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+            
+            // Toggle the clicked item
+            if (!isExpanded) {
+                targetElement.classList.add('show');
+                this.classList.remove('collapsed');
+                this.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Landing Page Specific Styles */
+    .hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    }
+    
+    .process-line {
+        position: absolute;
+        top: 30px;
+        right: -50%;
+        width: 100%;
+        height: 2px;
+        background-color: var(--primary-color);
+    }
+    
+    .bg-primary-light {
+        background-color: rgba(79, 70, 229, 0.1);
+    }
+    
+    .bg-success-light {
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+    
+    .bg-info-light {
+        background-color: rgba(59, 130, 246, 0.1);
+    }
+    
+    .domain-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        overflow: hidden;
+    }
+    
+    .domain-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .domain-card img {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .testimonial-card {
+        transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+</style>
+{% endblock %}

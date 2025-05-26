@@ -1,0 +1,28 @@
+Welcome to Interview Simulator AI!
+
+Hello {{ user.first_name }},
+
+Thank you for joining Interview Simulator AI! We're excited to help you prepare for your next job interview with our AI-powered mock interviews.
+
+Get Started
+----------
+Start by scheduling your first mock interview. Choose from different domains and difficulty levels to get the most relevant practice.
+
+Visit your dashboard to get started:
+{{ url_for('main.dashboard', _external=True) }}
+
+How It Works
+-----------
+1. Select a Domain - Choose from Full Stack Developer, AI Engineer, or Data Analyst tracks
+2. Upload Your Resume - Get personalized interview questions based on your experience
+3. Practice with AI - Experience realistic interview scenarios with our AI interviewer
+4. Get Feedback - Receive detailed analysis and suggestions for improvement
+
+If you have any questions or need assistance, feel free to reach out to our support team.
+
+Happy interviewing!
+The Interview Simulator AI Team
+
+--
+Interview Simulator AI
+This is an automated message, please do not reply to this email.

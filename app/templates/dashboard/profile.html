@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block head %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 2rem 0;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .side-nav .nav-link {
+        color: #4b5563;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .side-nav .nav-link:hover {
+        background-color: #f3f4f6;
+    }
+    
+    .side-nav .nav-link.active {
+        background-color: #e0e7ff;
+        color: #4338ca;
+        font-weight: 600;
+    }
+    
+    .side-nav .nav-link i {
+        width: 24px;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+    // File size validation
+    document.getElementById('profilePicture').addEventListener('change', function() {
+        const fileInput = this;
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        
+        if (fileInput.files.length > 0) {
+            const fileSize = fileInput.files[0].size;
+            if (fileSize > maxSize) {
+                alert('File size exceeds 2MB limit. Please choose a smaller file.');
+                fileInput.value = '';
+            }
+        }
+    });
+</script>
+{% endblock %}

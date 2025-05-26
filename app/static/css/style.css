@@ -1,0 +1,121 @@
+/* Main styles for Mock Interview Platform */
+
+/* General styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Navigation */
+.navbar {
+    padding: 0.8rem 0;
+    position: relative;
+    z-index: 1050;
+    background-color: #4f46e5 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Ensure login/signup buttons are visible */
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.navbar-nav .btn-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+    color: white !important;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem !important;
+    margin-left: 0.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.navbar-nav .btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+    transform: translateY(-1px);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.375rem;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 0.375rem;
+    border: none;
+}
+
+/* Footer */
+.footer {
+    background-color: #f9fafb;
+    padding: 3rem 0;
+    margin-top: 4rem;
+}
+
+/* Utility classes */
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    
+    .btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+}

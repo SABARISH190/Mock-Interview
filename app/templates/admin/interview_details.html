@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview #{{ interview.id }} - Details - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 600;
+    }
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.8em;
+        font-size: 0.8em;
+    }
+    .response-audio {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .analysis-score {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4e73df;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-video me-2"></i>Interview #{{ interview.id }}
+            <span class="badge {% if interview.status == 'completed' %}bg-success{% elif interview.status == 'cancelled' %}bg-danger{% else %}bg-warning{% endif %} ms-2">
+                {{ interview.status|title }}
+            </span>
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Admin</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.interviews') }}">Interviews</a></li>
+                <li class="breadcrumb-item active" aria-current="page">#{{ interview.id }}</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Interview Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">User:</div>
+                        <div class="col-md-8">
+                            <a href="{{ url_for('admin.user_details', user_id=interview.user.id) }}">
+                                {{ interview.user.username }}
+                            </a>
+                            <small class="d-block text-muted">{{ interview.user.email }}</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Domain:</div>
+                        <div class="col-md-8">{{ interview.domain }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Title:</div>
+                        <div class="col-md-8">{{ interview.title }}</div>
+                    </div>
+                    {% if interview.description %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Description:</div>
+                        <div class="col-md-8">{{ interview.description }}</div>
+                    </div>
+                    {% endif %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Created:</div>
+                        <div class="col-md-8">{{ interview.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                    {% if interview.started_at %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Started:</div>
+                        <div class="col-md-8">{{ interview.started_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                    {% endif %}
+                    {% if interview.completed_at %}
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">
+                            {{ 'Completed' if interview.status == 'completed' else 'Cancelled' }}:
+                        </div>
+                        <div class="col-md-8">{{ interview.completed_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if questions %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Questions & Responses</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="questionsAccordion">
+                        {% for question in questions %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse{{ loop.index }}" 
+                                        aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" 
+                                        aria-controls="collapse{{ loop.index }}">
+                                    Question #{{ loop.index }}: {{ question.question_text }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ loop.index }}" 
+                                 class="accordion-collapse collapse {% if loop.first %}show{% endif %}" 
+                                 aria-labelledby="heading{{ loop.index }}" 
+                                 data-bs-parent="#questionsAccordion">
+                                <div class="accordion-body">
+                                    {% if question.response %}
+                                        <p><strong>Answer:</strong> {{ question.response.answer_text or 'No text response' }}</p>
+                                        {% if question.response.audio_path %}
+                                            <audio controls class="mb-3">
+                                                <source src="{{ url_for('static', filename=question.response.audio_path) }}" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        {% endif %}
+                                        <p><small class="text-muted">Duration: {{ question.response.duration|round(2) }} seconds</small></p>
+                                    {% else %}
+                                        <p class="text-muted">No response recorded</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {% if analysis %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>Overall Score</h6>
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ '%.0f'|format(analysis.overall_score * 10) }}%" 
+                                 aria-valuenow="{{ '%.0f'|format(analysis.overall_score * 10) }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ analysis.overall_score|round(1) }}/10
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Technical Skills</h6>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ '%.0f'|format(analysis.technical_score * 10) }}%" 
+                                 aria-valuenow="{{ '%.0f'|format(analysis.technical_score * 10) }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ analysis.technical_score|round(1) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Communication</h6>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ '%.0f'|format(analysis.communication_score * 10) }}%" 
+                                 aria-valuenow="{{ '%.0f'|format(analysis.communication_score * 10) }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ analysis.communication_score|round(1) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Problem Solving</h6>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ '%.0f'|format(analysis.problem_solving_score * 10) }}%" 
+                                 aria-valuenow="{{ '%.0f'|format(analysis.problem_solving_score * 10) }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ analysis.problem_solving_score|round(1) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if analysis.feedback %}
+                    <div class="mt-4">
+                        <h6>Feedback</h6>
+                        <div class="p-3 bg-light rounded">
+                            {{ analysis.feedback|nl2br }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('admin.interviews') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Interviews
+                        </a>
+                        
+                        {% if interview.status == 'completed' and analysis %}
+                            <a href="#" class="btn btn-outline-primary mt-2">
+                                <i class="fas fa-download me-2"></i>Download Report
+                            </a>
+                        {% endif %}
+                        
+                        {% if interview.status not in ['completed', 'cancelled'] %}
+                            <form action="{{ url_for('admin.cancel_interview', interview_id=interview.id) }}" method="POST" class="mt-2">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="fas fa-times me-2"></i>Cancel Interview
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Enable tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

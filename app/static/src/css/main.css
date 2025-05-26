@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Avatar styles */
+.user-avatar {
+    transition: all 0.3s ease;
+    filter: grayscale(100%);
+}
+
+.user-avatar.grayscale-0 {
+    filter: grayscale(0%);
+}
+
+/* Custom styles can be added below */
+body {
+    @apply bg-gray-50;
+}
+
+/* Custom components */
+.btn {
+    @apply font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center;
+}
+
+.btn-primary {
+    @apply text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300;
+}
+
+.btn-secondary {
+    @apply text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-4 focus:ring-gray-200;
+}
+
+/* Navbar styles */
+.navbar {
+    @apply bg-indigo-600 shadow-sm;
+}
+
+.navbar-brand {
+    @apply text-white hover:text-white;
+}
+
+.nav-link {
+    @apply text-indigo-100 hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium;
+}
+
+.nav-link.active {
+    @apply bg-indigo-800 text-white;
+}
+
+/* Card styles */
+.card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+}
+
+.card-header {
+    @apply px-6 py-4 border-b border-gray-200;
+}
+
+.card-title {
+    @apply text-lg font-semibold text-gray-800;
+}
+
+.card-body {
+    @apply p-6;
+}
+
+/* Form styles */
+.form-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5;
+}
+
+.form-label {
+    @apply block mb-2 text-sm font-medium text-gray-900;
+}
+
+/* Alert styles */
+.alert {
+    @apply p-4 mb-4 text-sm rounded-lg;
+}
+
+.alert-success {
+    @apply text-green-700 bg-green-100 border border-green-200;
+}
+
+.alert-error {
+    @apply text-red-700 bg-red-100 border border-red-200;
+}
+
+.alert-warning {
+    @apply text-yellow-700 bg-yellow-100 border border-yellow-200;
+}
+
+.alert-info {
+    @apply text-blue-700 bg-blue-100 border border-blue-200;
+}

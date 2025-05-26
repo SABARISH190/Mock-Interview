@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.username }} - User Details - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 600;
+    }
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 5px solid #fff;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .stats-card {
+        text-align: center;
+        padding: 1rem;
+    }
+    .stats-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #4e73df;
+    }
+    .stats-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #858796;
+        letter-spacing: 0.1em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-user me-2"></i>User Details
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Admin</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.users') }}">Users</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ user.username }}</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <!-- User Profile Card -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold">Profile Information</h6>
+                    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) if user.profile_pic else url_for('static', filename='profile_pics/default.jpg') }}" 
+                             class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                        <p class="card-text text-muted">@{{ user.username }}</p>
+                        <div class="mb-2">
+                            {% if user.is_verified %}
+                            <span class="badge bg-success">Verified</span>
+                            {% else %}
+                            <span class="badge bg-warning">Unverified</span>
+                            {% endif %}
+                            
+                            {% if user.is_admin %}
+                            <span class="badge bg-primary">Admin</span>
+                            {% else %}
+                            <span class="badge bg-secondary">User</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-envelope me-2"></i> Email</span>
+                            <span>{{ user.email }}</span>
+                        </li>
+                        {% if user.phone %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-phone me-2"></i> Phone</span>
+                            <span>{{ user.phone }}</span>
+                        </li>
+                        {% endif %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-calendar me-2"></i> Joined</span>
+                            <span>{{ user.created_at.strftime('%b %d, %Y') }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-clock me-2"></i> Last Login</span>
+                            <span>{{ user.last_login.strftime('%b %d, %Y %H:%M') if user.last_login else 'Never' }}</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+                            <i class="fas fa-trash me-1"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resume Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Resumes</h6>
+                </div>
+                <div class="card-body">
+                    {% if user.resumes %}
+                    <ul class="list-group list-group-flush">
+                        {% for resume in user.resumes %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="domain-badge">{{ resume.domain }}</span>
+                                    <small class="d-block text-muted">Uploaded: {{ resume.created_at.strftime('%b %d, %Y') }}</small>
+                                </div>
+                                <a href="{{ url_for('static', filename='uploads/resumes/' + resume.file_name) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                    <i class="fas fa-file-download"></i>
+                                </a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="text-center p-3">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <p>No resumes uploaded yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Activity and Interviews -->
+        <div class="col-xl-8 col-lg-7">
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle p-3 bg-primary-light me-3">
+                                    <i class="fas fa-comments fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted">Total Interviews</h6>
+                                    <h2 class="fw-bold mb-0">{{ user.interviews|length }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle p-3 bg-success-light me-3">
+                                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted">Completed</h6>
+                                    <h2 class="fw-bold mb-0">{{ completed_interviews }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle p-3 bg-info-light me-3">
+                                    <i class="fas fa-chart-line fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted">Avg. Score</h6>
+                                    <h2 class="fw-bold mb-0">{{ avg_score|round|int if avg_score else 'N/A' }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interview History -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Interview History</h6>
+                </div>
+                <div class="card-body">
+                    {% if user.interviews %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Domain</th>
+                                    <th>Difficulty</th>
+                                    <th>Status</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for interview in user.interviews %}
+                                <tr>
+                                    <td>{{ interview.started_at.strftime('%Y-%m-%d %H:%M') if interview.started_at else 'Not started' }}</td>
+                                    <td><span class="domain-badge">{{ interview.domain }}</span></td>
+                                    <td>
+                                        {% if interview.difficulty == 'beginner' %}
+                                        <span class="badge bg-success">Beginner</span>
+                                        {% elif interview.difficulty == 'intermediate' %}
+                                        <span class="badge bg-warning">Intermediate</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Advanced</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if interview.status == 'scheduled' %}
+                                        <span class="badge status-scheduled">Scheduled</span>
+                                        {% elif interview.status == 'in_progress' %}
+                                        <span class="badge status-in-progress">In Progress</span>
+                                        {% elif interview.status == 'completed' %}
+                                        <span class="badge status-completed">Completed</span>
+                                        {% else %}
+                                        <span class="badge status-cancelled">Cancelled</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if interview.analysis %}
+                                        <span class="badge bg-{% if interview.analysis.overall_score >= 80 %}success{% elif interview.analysis.overall_score >= 60 %}warning{% else %}danger{% endif %}">
+                                            {{ interview.analysis.overall_score }}%
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('admin.interview_details', interview_id=interview.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center p-4">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <p>This user hasn't participated in any interviews yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Performance Chart -->
+            {% if user.interviews|selectattr('analysis')|list|length > 0 %}
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Performance Trends</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="performanceChart" height="300"></canvas>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete user <strong>{{ user.username }}</strong>?</p>
+                <p class="text-danger">This action cannot be undone and will remove all user data including interviews and resumes.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">Delete User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if user.interviews|selectattr('analysis')|list|length > 0 %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Performance Chart
+    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+    
+    // Prepare labels and data
+    const labels = [
+        {%- if user.interviews -%}
+            {%- for interview in user.interviews if interview.analysis -%}
+                '{{ interview.started_at.strftime('%Y-%m-%d') if interview.started_at else 'N/A' }}'
+                {%- if not loop.last -%}, {%- endif -%}
+            {%- endfor -%}
+        {%- else -%}
+            'No data'
+        {%- endif -%}
+    ];
+    
+    const overallScores = [
+        {%- if user.interviews -%}
+            {%- for interview in user.interviews if interview.analysis -%}
+                {{ interview.analysis.overall_score }}
+                {%- if not loop.last -%}, {%- endif -%}
+            {%- endfor -%}
+        {%- else -%}
+            0
+        {%- endif -%}
+    ];
+    
+    const technicalScores = [
+        {%- for interview in user.interviews if interview.analysis -%}
+            {{ interview.analysis.technical_score }}
+            {%- if not loop.last -%}, {%- endif -%}
+        {%- endfor -%}
+    ];
+    
+    const communicationScores = [
+        {%- for interview in user.interviews if interview.analysis -%}
+            {{ interview.analysis.communication_score }}
+            {%- if not loop.last -%}, {%- endif -%}
+        {%- endfor -%}
+    ];
+    
+    const performanceData = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Overall Score',
+                data: overallScores,
+                borderColor: 'rgba(78, 115, 223, 1)',
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                fill: true,
+                tension: 0.4
+            },
+            {
+                label: 'Technical Score',
+                data: technicalScores,
+                borderColor: 'rgba(28, 200, 138, 1)',
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0.4
+            },
+            {
+                label: 'Communication Score',
+                data: communicationScores,
+                borderColor: 'rgba(246, 194, 62, 1)',
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0.4
+            }
+        ]
+    };
+    
+    const performanceChart = new Chart(performanceCtx, {
+        type: 'line',
+        data: performanceData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Score'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Interview Date'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

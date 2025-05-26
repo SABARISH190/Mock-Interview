@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Import Questions - Interview Simulator AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+    }
+    .table th {
+        background-color: #f8f9fc;
+        font-weight: 600;
+        color: #4e73df;
+    }
+    .btn-import {
+        background-color: #4e73df;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.35rem;
+        font-weight: 600;
+    }
+    .btn-import:hover {
+        background-color: #2e59d9;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-file-import me-2"></i>Import Questions
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Admin</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.questions') }}">Questions</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Import</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-file-import me-2"></i>Import Questions</h5>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <div class="mb-4">
+                        <h5>Current Question Counts</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Domain</th>
+                                        <th>Question Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for domain, count in question_counts %}
+                                        <tr>
+                                            <td>{{ domain }}</td>
+                                            <td>{{ count }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="2" class="text-center">No questions found in the database.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Import Questions</h5>
+                            <p class="card-text">
+                                Click the button below to import questions from the text files into the database.
+                                This will parse the following files:
+                            </p>
+                            <ul>
+                                <li>FullStackDeveloper_QA.txt</li>
+                                <li>AIEngineer_QA.txt</li>
+                                <li>DataAnalyst_QA.txt</li>
+                                <li>BehavioralAnalysis_QA.txt</li>
+                            </ul>
+                            <p class="text-muted">
+                                Note: This operation will not delete existing questions but may create duplicates.
+                            </p>
+                            <form method="POST" action="{{ url_for('interview.import_questions') }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-file-import"></i> Import Questions
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Auto-hide alerts after 5 seconds
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    });
+</script>
+{% endblock %}

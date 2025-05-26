@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your {{ interview.domain }} Mock Interview is Scheduled</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .interview-details {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .detail-row {
+            display: flex;
+            margin: 10px 0;
+        }
+        .detail-label {
+            font-weight: bold;
+            width: 120px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Your {{ interview.domain }} Mock Interview is Scheduled!</h1>
+    </div>
+    
+    <div class="content">
+        <p>Hello {{ user.first_name }},</p>
+        <p>Your mock interview for <strong>{{ interview.domain }}</strong> has been successfully scheduled. Here are the details:</p>
+        
+        <div class="interview-details">
+            <div class="detail-row">
+                <div class="detail-label">Interview ID:</div>
+                <div>#{{ '%04d' % interview.id }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Domain:</div>
+                <div>{{ interview.domain }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Scheduled For:</div>
+                <div>{{ interview.scheduled_at.strftime('%A, %B %d, %Y at %I:%M %p') }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Duration:</div>
+                <div>Approximately 30-45 minutes</div>
+            </div>
+        </div>
+        
+        <h3>How to Prepare</h3>
+        <ul>
+            <li>Make sure you're in a quiet, well-lit room</li>
+            <li>Use a computer with a stable internet connection</li>
+            <li>Have your resume and any relevant materials ready</li>
+            <li>Test your microphone and webcam beforehand</li>
+        </ul>
+        
+        <p style="text-align: center;">
+            <a href="{{ url_for('interview.join', interview_id=interview.id, _external=True) }}" class="button">Join Interview</a>
+        </p>
+        
+        <p>If you need to reschedule or have any questions, please contact our support team.</p>
+        
+        <p>Good luck with your interview preparation!</p>
+        <p>The Mock Interview Team</p>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; {{ now.year }} Mock Interview Platform. All rights reserved.</p>
+        <p>This is an automated message, please do not reply to this email.</p>
+    </div>
+</body>
+</html>
