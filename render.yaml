@@ -28,4 +28,8 @@ services:
         fromDatabase:
           name: mock-interview-db
           property: connectionString
+      - key: SQLALCHEMY_DATABASE_URI
+        fromDatabase:
+          name: mock-interview-db
+          property: connectionString
     plan: free
