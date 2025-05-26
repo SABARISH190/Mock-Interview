@@ -8,18 +8,27 @@
     <!-- Login/Signup Buttons -->
     <div class="position-absolute top-0 end-0 mt-3 me-4">
         <div class="d-flex gap-2">
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm login-btn" style="opacity: 0.6;">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm login-btn" style="opacity: 1; transition: all 0.3s ease;">
                 <i class="fas fa-sign-in-alt me-1"></i> Login
             </a>
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm shadow-sm" style="background-color: #4f46e5; border-color: #4f46e5;">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm shadow-sm" style="background-color: #4f46e5; border-color: #4f46e5; transition: all 0.3s ease;">
                 <i class="fas fa-user-plus me-1"></i> Sign Up
             </a>
         </div>
     </div>
     <style>
+        .login-btn {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #4f46e5;
+            color: #4f46e5 !important;
+            font-weight: 500;
+        }
         .login-btn:hover {
-            opacity: 1 !important;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+            color: white !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .btn-primary {
             transition: all 0.2s ease;
@@ -251,10 +260,10 @@
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
-                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <rect width="100" height="100" fill="#4e73df"/>
-                                    <path d="M50 30c5.5 0 10-4.5 10-10s-4.5-10-10-10-10 4.5-10 10 4.5 10 10 10zm0 10c-11 0-30 5.5-30 16.7v13.3h60V56.7C80 45.5 61 40 50 40z" fill="#f8f9fc"/>
-                                </svg>
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces" 
+                                     alt="Sarah Johnson" 
+                                     class="w-100 h-100 object-cover"
+                                     loading="lazy">
                             </div>
                             <div class="ms-3">
                                 <h6 class="mb-0">Sarah Johnson</h6>
@@ -270,11 +279,10 @@
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
-                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <rect width="100" height="100" fill="#1cc88a"/>
-                                    <path d="M50 30c-5.5 0-10-4.5-10-10s4.5-10 10-10 10 4.5 10 10-4.5 10-10 10zm0 10c11 0 30 5.5 30 16.7v13.3H20V56.7C20 45.5 39 40 50 40z" fill="#e6f7f1"/>
-                                    <circle cx="50" cy="25" r="5" fill="#e6f7f1"/>
-                                </svg>
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces" 
+                                     alt="Michael Chen" 
+                                     class="w-100 h-100 object-cover"
+                                     loading="lazy">
                             </div>
                             <div class="ms-3">
                                 <h6 class="mb-0">Michael Chen</h6>
@@ -290,11 +298,10 @@
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
-                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <rect width="100" height="100" fill="#f6c23e"/>
-                                    <path d="M50 25c6.9 0 12.5 5.6 12.5 12.5S56.9 50 50 50s-12.5-5.6-12.5-12.5S43.1 25 50 25zm0 30c11 0 20 5.1 20 11.3V80H30V66.3C30 60.1 39 55 50 55z" fill="#fdf6e3"/>
-                                    <circle cx="50" cy="37.5" r="7.5" fill="#fdf6e3"/>
-                                </svg>
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces" 
+                                     alt="Emma Williams" 
+                                     class="w-100 h-100 object-cover"
+                                     loading="lazy">
                             </div>
                             <div class="ms-3">
                                 <h6 class="mb-0">Emma Williams</h6>
